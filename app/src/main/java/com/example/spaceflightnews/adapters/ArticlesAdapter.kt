@@ -6,13 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.size.Scale
-import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.FitCenter
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
+import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.SingleArticleBinding
 import com.example.spaceflightnews.model.Article
 
@@ -27,19 +22,23 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(article: Article) {
-            with(binding){
+            with(binding) {
                 title.text = article.title
 
-                if(article.summary.length >= 255){
-                    description.visibility = View.GONE
-                }else{
-                    description.visibility = View.VISIBLE
-                    description.text = article.summary
+                if (article.summary.length >= MAX_SUMMARY_LENGTH) {
+                    summary.visibility = View.GONE
+                } else {
+                    summary.visibility = View.VISIBLE
+                    summary.text = article.summary
                 }
+
                 Glide.with(root)
                     .load(article.imageUrl)
-                    .transform(RoundedCorners(36), FitCenter())
+                    .placeholder(R.drawable.ic_space_placeholder)
                     .into(image)
+
+                date.text = article.updated.substring(0, DATE_END_INDEX)
+
             }
         }
     }
@@ -55,7 +54,11 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
     }
 
     companion object {
-        private const val MAX_DESCRIPTION_LENGTH = 255
+        private const val MAX_SUMMARY_LENGTH = 128
+        private const val MAX_TITLE_LENGTH = 128
+        private const val TAG = "ArticlesAdapter"
+        private const val TITLE_END_INDEX = 64
+        private const val DATE_END_INDEX = 10
     }
 }
 

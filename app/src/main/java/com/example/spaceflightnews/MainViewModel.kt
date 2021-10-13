@@ -26,7 +26,7 @@ class MainViewModel(private val repository: Repository = Repository(ApiClient.AR
         _articles.postValue(ViewState.Loading(null))
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                val data = repository.getArticles()
+                val data = repository.getArticles(100)
                 _articles.postValue(ViewState.Success(data))
             }catch (e: Exception){
                 Log.e(TAG, e.message.toString())
