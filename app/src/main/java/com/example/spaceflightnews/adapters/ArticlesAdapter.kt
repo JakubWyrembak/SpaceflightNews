@@ -24,6 +24,7 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
         var currentArticle: Article? = null
 
         fun bind(article: Article) {
+            currentArticle = article
             setupTextViews()
             setupSummaryVisibility()
             loadImage()
