@@ -1,6 +1,5 @@
 package com.example.spaceflightnews.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,31 +21,44 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(article: Article) {
-            with(binding) {
-                title.text = article.title
+        var currentArticle: Article? = null
 
-                if (article.summary.length >= MAX_SUMMARY_LENGTH) {
-                    summary.visibility = View.GONE
-                } else {
-                    summary.visibility = View.VISIBLE
+        fun bind(article: Article) {
+            setupTextViews()
+            setupSummaryVisibility()
+            loadImage()
+            setupListener(article)
+        }
+
+        private fun setupTextViews() {
+            currentArticle!!.let { article ->
+                with(binding) {
+                    title.text = article.title
+                    date.text = article.getUpdatedTime()
                     summary.text = article.summary
                 }
-
-                Glide.with(root)
-                    .load(article.imageUrl)
-                    .placeholder(R.drawable.ic_space_placeholder)
-                    .error(R.drawable.ic_error)
-                    .into(image)
-
-                date.text = article.getUpdatedTime()
-
-                setupListener(article)
             }
         }
 
+        private fun setupSummaryVisibility() {
+            binding.summary.visibility =
+                if (currentArticle!!.summary.length >= MAX_SUMMARY_LENGTH) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
+        }
+
+        private fun loadImage() {
+            Glide.with(binding.root)
+                .load(currentArticle!!.imageUrl)
+                .placeholder(R.drawable.ic_space_placeholder)
+                .error(R.drawable.ic_error)
+                .into(binding.image)
+        }
+
         private fun setupListener(article: Article) {
-            with(binding){
+            with(binding) {
                 articleCard.setOnClickListener { showDetailedArticle(article) }
                 favoriteButton.setOnClickListener {
                     favoriteButton
@@ -68,9 +80,7 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
 
     companion object {
         private const val MAX_SUMMARY_LENGTH = 128
-        private const val MAX_TITLE_LENGTH = 128
         private const val TAG = "ArticlesAdapter"
-        private const val TITLE_END_INDEX = 64
     }
 }
 
