@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/articleDetailFragment"
-        android:name="com.example.spaceflightnews.ArticleDetailFragment"
+        android:name="com.example.spaceflightnews.ui.ArticleDetailFragment"
         android:label="fragment_article_detail"
         tools:layout="@layout/fragment_article_detail">
 

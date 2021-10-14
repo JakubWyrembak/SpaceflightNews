@@ -1,4 +1,4 @@
-package com.example.spaceflightnews
+package com.example.spaceflightnews.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.FragmentArticleDetailBinding
 import com.example.spaceflightnews.model.Article
 

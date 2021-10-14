@@ -1,4 +1,4 @@
-package com.example.spaceflightnews
+package com.example.spaceflightnews.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

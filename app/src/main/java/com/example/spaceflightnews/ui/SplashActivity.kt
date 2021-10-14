@@ -1,4 +1,4 @@
-package com.example.spaceflightnews
+package com.example.spaceflightnews.ui
 
 import android.content.Intent
 import android.os.Build
@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {

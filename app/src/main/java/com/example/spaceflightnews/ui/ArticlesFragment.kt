@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spaceflightnews.MainActivity
 import com.example.spaceflightnews.MainViewModel
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.example.spaceflightnews.ArticleDetailFragmentArgs
 import com.example.spaceflightnews.databinding.FragmentArticleWebsiteBinding
 
 
@@ -21,6 +20,7 @@ class ArticleWebsiteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentArticleWebsiteBinding.inflate(inflater)
+        binding.webView.settings.javaScriptEnabled = true
         return binding.root
     }
 
