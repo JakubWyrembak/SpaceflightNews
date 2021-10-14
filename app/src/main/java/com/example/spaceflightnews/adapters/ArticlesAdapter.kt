@@ -48,7 +48,10 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
         private fun setupListener(article: Article) {
             with(binding){
                 articleCard.setOnClickListener { showDetailedArticle(article) }
-                favoriteButton.setOnClickListener { Log.v(TAG, "Dziala")  }
+                favoriteButton.setOnClickListener {
+                    favoriteButton
+
+                }
             }
         }
     }

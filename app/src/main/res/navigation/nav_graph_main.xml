@@ -46,5 +46,19 @@
             android:name="articleDetail"
             app:argType="com.example.spaceflightnews.model.Article"
             />
+        <action
+            android:id="@+id/action_articleDetailFragment_to_articleWebsiteFragment"
+            app:destination="@id/articleWebsiteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/articleWebsiteFragment"
+        android:name="com.example.spaceflightnews.ui.ArticleWebsiteFragment"
+        android:label="fragment_article_website"
+        tools:layout="@layout/fragment_article_website">
+
+        <argument
+            android:name="websiteUrl"
+            app:argType="string"
+            />
     </fragment>
 </navigation>
