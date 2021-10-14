@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.spaceflightnews.databinding.FragmentArticleDetailBinding
+import com.example.spaceflightnews.model.Article
 
 class ArticleDetailFragment : Fragment() {
 
@@ -18,6 +21,26 @@ class ArticleDetailFragment : Fragment() {
     ): View{
         _binding = FragmentArticleDetailBinding.inflate(inflater)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val args: ArticleDetailFragmentArgs by navArgs()
+        setupViews(args.articleDetail)
+    }
+
+    private fun setupViews(article: Article) {
+        with(binding){
+            Glide.with(root)
+                .load(article.imageUrl)
+                .placeholder(R.drawable.ic_space_placeholder)
+                .into(image)
+
+            title.text = article.title
+            summary.text = article.summary
+            updated.text = article.getUpdatedTime()
+            site.text = article.site
+        }
     }
 
     override fun onDestroy() {

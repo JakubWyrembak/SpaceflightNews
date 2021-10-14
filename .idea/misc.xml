@@ -4,12 +4,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/drawable/gradient_photo.xml" value="0.290625" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/drawable/ic_articles.xml" value="0.290625" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/drawable/ic_error.xml" value="0.290625" />
         <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/drawable/ic_favourite.xml" value="0.290625" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/drawable/ic_rocket.xml" value="0.290625" />
         <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/drawable/ic_rocket_splash.xml" value="0.290625" />
         <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/drawable/ic_space_placeholder.xml" value="0.290625" />
         <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/layout/activity_main.xml" value="0.23278985507246377" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/layout/activity_main_bottom.xml" value="0.2128623188405797" />
         <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/layout/activity_splash.xml" value="0.2128623188405797" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/layout/fragment_article_detail.xml" value="0.176" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/layout/fragment_articles.xml" value="0.2128623188405797" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/layout/fragment_home.xml" value="0.2128623188405797" />
         <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/layout/single_article.xml" value="0.264" />
+        <entry key="..\:/Projekty/SpaceflightNews/app/src/main/res/menu/bottom_nav_menu.xml" value="0.27447916666666666" />
       </map>
     </option>
   </component>

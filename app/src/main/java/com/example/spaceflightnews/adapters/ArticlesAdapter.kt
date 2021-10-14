@@ -1,5 +1,6 @@
 package com.example.spaceflightnews.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,7 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
     // TODO kolejność
     inner class ViewHolder(
         private val binding: SingleArticleBinding,
-        private val onClick: (Article) -> Unit,
+        private val showDetailedArticle: (Article) -> Unit,
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -35,10 +36,19 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
                 Glide.with(root)
                     .load(article.imageUrl)
                     .placeholder(R.drawable.ic_space_placeholder)
+                    .error(R.drawable.ic_error)
                     .into(image)
 
-                date.text = article.updated.substring(0, DATE_END_INDEX)
+                date.text = article.getUpdatedTime()
 
+                setupListener(article)
+            }
+        }
+
+        private fun setupListener(article: Article) {
+            with(binding){
+                articleCard.setOnClickListener { showDetailedArticle(article) }
+                favoriteButton.setOnClickListener { Log.v(TAG, "Dziala")  }
             }
         }
     }
@@ -58,7 +68,6 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
         private const val MAX_TITLE_LENGTH = 128
         private const val TAG = "ArticlesAdapter"
         private const val TITLE_END_INDEX = 64
-        private const val DATE_END_INDEX = 10
     }
 }
 

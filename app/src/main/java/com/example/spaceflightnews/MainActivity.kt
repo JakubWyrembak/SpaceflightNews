@@ -1,42 +1,55 @@
 package com.example.spaceflightnews
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spaceflightnews.adapters.ArticlesAdapter
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.spaceflightnews.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var recyclerAdapter: ArticlesAdapter
-
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
-    }
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        recyclerAdapter = ArticlesAdapter {
+        navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_articles, R.id.navigation_history, R.id.navigation_favorite
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        binding.navView.setupWithNavController(navController)
+    }
 
-        }
+    override fun onSupportNavigateUp(): Boolean {
+        return NavigationUI.navigateUp(navController, null)
+    }
 
-        binding.articlesRecyclerView.adapter = recyclerAdapter
-        binding.articlesRecyclerView.layoutManager = LinearLayoutManager(this)
+    fun hideBottomNavigation(){
+        binding.navView.clearAnimation()
+        binding.navView.animate().translationY(
+            binding.navView.height.toFloat()
+        ).duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
+    }
 
-        viewModel.articles.observe(this) {
-            // TODO if != null itp
-            recyclerAdapter.submitList(it.data)
-            Log.v(TAG, it.data.toString())
-        }
+    fun showBottomNavigation(){
+        binding.navView.clearAnimation()
+        binding.navView.animate().translationY(0F)
+            .duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
     }
 
     companion object {
         private const val TAG = "MainActivity"
+        private const val BOTTOM_NAVIGATION_ANIMATION_DURATION = 300L
     }
 }

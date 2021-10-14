@@ -6,10 +6,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
+    android:layout_marginVertical="8dp"
     android:layout_marginHorizontal="8dp"
     app:cardCornerRadius="16dp"
-    app:cardBackgroundColor="@color/primaryLightColor">
+    app:cardBackgroundColor="@color/primaryLightColor"
+    android:id="@+id/article_card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,21 +23,21 @@
             android:adjustViewBounds="true"
             android:foreground="@drawable/gradient_photo"
             android:scaleType="fitCenter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.7"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.7"
             tools:srcCompat="@drawable/ic_space_placeholder" />
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/favorite"
+            android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_favourite"
             android:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/image"
-            app:layout_constraintEnd_toStartOf="@+id/image"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -46,9 +47,9 @@
             android:gravity="center"
             android:textColor="@color/lightGray"
             app:layout_constraintBottom_toBottomOf="@+id/image"
-            app:layout_constraintEnd_toStartOf="@+id/image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/favorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image"
+            app:layout_constraintTop_toBottomOf="@id/favorite_button"
             tools:text="YYYY-MM-DD" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -70,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:textColor="@color/lightGray"
+            android:textColor="@color/secondaryDarkColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
