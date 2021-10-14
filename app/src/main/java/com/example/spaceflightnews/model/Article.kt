@@ -1,10 +1,9 @@
 package com.example.spaceflightnews.model
 
 import android.os.Parcelable
+import com.example.spaceflightnews.utils.DATE_END_INDEX
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
-
-private const val DATE_END_INDEX = 10
 
 @Parcelize
 data class Article(
@@ -25,7 +24,6 @@ data class Article(
 
     val favorite: Boolean = false,
 ) : Parcelable {
-
     fun getUpdatedTime() =
         if (updated.length >= DATE_END_INDEX) updated.substring(0, DATE_END_INDEX)
         else updated
