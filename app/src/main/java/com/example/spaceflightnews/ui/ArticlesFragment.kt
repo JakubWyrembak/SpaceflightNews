@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spaceflightnews.*
+import com.example.spaceflightnews.ArticlesModes
+import com.example.spaceflightnews.MainViewModel
+import com.example.spaceflightnews.MainViewState
+import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArticlesFragment : Fragment() {
 
@@ -20,10 +25,7 @@ class ArticlesFragment : Fragment() {
         get() = _binding!!
 
     private lateinit var recyclerAdapter: ArticlesAdapter
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
-    }
-
+    private val viewModel: MainViewModel by sharedViewModel()
     private var currentMode: ArticlesModes = ArticlesModes.MAIN
 
     override fun onCreateView(
@@ -33,24 +35,47 @@ class ArticlesFragment : Fragment() {
         _binding = FragmentArticlesBinding.inflate(inflater)
         setHasOptionsMenu(true)
 
-        getCurrentMode()
         setupRecycler()
         setupOtherViews()
 
-        viewModel.articles.observe(viewLifecycleOwner) {
-            checkCurrentViewState(it)
-        }
+        setupCurrentMode()
 
         return binding.root
     }
 
+    private fun setupCurrentMode() {
+        when (getCurrentMode()) {
+            ArticlesModes.MAIN -> {
+                viewModel.articles.observe(viewLifecycleOwner) {
+                    checkCurrentViewState(it)
+                }
+            }
+
+            ArticlesModes.HISTORY -> {
+                viewModel.historyArticles.observe(viewLifecycleOwner) {
+                    recyclerAdapter.submitList(viewModel.historyArticles.value)
+                }
+            }
+
+            ArticlesModes.FAVORITES -> {
+                recyclerAdapter.submitList(viewModel.getFavoriteArticles())
+            }
+        }
+    }
+
     private fun setupRecycler() {
         recyclerAdapter = ArticlesAdapter { article ->
-            navigateToDetail(article)
-            if (requireActivity() is MainActivity) {
-                UserData.addToHistory(article)      // TODO viewModel
-                (activity as MainActivity).hideBottomNavigation()
+            lifecycleScope.launch {
+                if (requireActivity() is MainActivity) {
+                    // We don't want to change order when we are in history mode
+                    if (currentMode != ArticlesModes.HISTORY) {
+                        viewModel.addToHistory(article.id)
+                    }
+                    (activity as MainActivity).hideBottomNavigation()
+                }
             }
+
+            navigateToDetail(article)
         }
 
         binding.articles.apply {
@@ -60,16 +85,16 @@ class ArticlesFragment : Fragment() {
     }
 
     private fun setupOtherViews() {
-        with(binding){
+        with(binding) {
             refreshLayout.setOnRefreshListener {
                 viewModel.onRefresh()
             }
         }
     }
 
-    private fun getCurrentMode() {
+    private fun getCurrentMode(): ArticlesModes {
         val args: ArticlesFragmentArgs by navArgs()
-        currentMode = when (args.articlesKey) {
+        return when (args.articlesKey) {
             R.string.favorites_key -> ArticlesModes.FAVORITES
             R.string.history_key -> ArticlesModes.HISTORY
             else -> ArticlesModes.MAIN
@@ -91,12 +116,12 @@ class ArticlesFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun checkCurrentViewState(stateMain: MainViewState) {
-        when (stateMain) {
+    private fun checkCurrentViewState(state: MainViewState) {
+        when (state) {
             is MainViewState.Success -> {
                 binding.loadingProgressBar.visibility = View.GONE
                 binding.refreshLayout.isRefreshing = false
-                submitData(stateMain.data)
+                recyclerAdapter.submitList(state.data)
             }
 
             is MainViewState.Loading -> {
@@ -104,27 +129,9 @@ class ArticlesFragment : Fragment() {
             }
 
             is MainViewState.Error -> {
-                stateMain.message?.let { Log.e(TAG, it) }
+                state.message?.let { Log.e(TAG, it) }
             }
         }
-    }
-
-    private fun submitData(allArticlesData: List<Article>) {
-        when (currentMode) {
-            ArticlesModes.MAIN -> {
-                recyclerAdapter.submitList(allArticlesData)
-            }
-
-            // TODO nie trzeba tego sprawdzać za każdym razem, może wystarczy tylko na początku
-            ArticlesModes.HISTORY -> {
-                recyclerAdapter.submitList(viewModel.getHistoryArticles())
-            }
-
-            ArticlesModes.FAVORITES -> {
-                recyclerAdapter.submitList(viewModel.getFavoriteArticles())
-            }
-        }
-
     }
 
     override fun onResume() {

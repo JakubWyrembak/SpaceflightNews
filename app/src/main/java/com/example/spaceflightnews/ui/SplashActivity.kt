@@ -10,10 +10,14 @@ import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import com.example.spaceflightnews.MainViewModel
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.ActivitySplashBinding
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SplashActivity : AppCompatActivity() {
+
+    private lateinit var viewModel:MainViewModel
 
     private lateinit var binding: ActivitySplashBinding
 
@@ -22,6 +26,7 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = getViewModel()
         hideBar()
         animate()
     }

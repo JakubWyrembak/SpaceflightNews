@@ -7,7 +7,9 @@
 
     <action
         android:id="@+id/action_navigation_to_articleDetailFragment"
-        app:destination="@id/articleDetailFragment" />
+        app:destination="@id/articleDetailFragment"
+        app:enterAnim="@android:anim/fade_in"
+        app:popExitAnim="@android:anim/fade_out" />
 
     <fragment
         android:id="@+id/navigation_articles"

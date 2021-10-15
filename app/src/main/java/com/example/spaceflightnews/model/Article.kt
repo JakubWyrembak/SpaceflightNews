@@ -1,5 +1,6 @@
 package com.example.spaceflightnews.model
 
+import android.graphics.Bitmap
 import android.os.Parcelable
 import com.example.spaceflightnews.utils.DATE_END_INDEX
 import com.squareup.moshi.Json

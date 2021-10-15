@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.example.spaceflightnews.R
-import com.example.spaceflightnews.UserData
 import com.example.spaceflightnews.databinding.SingleArticleBinding
 import com.example.spaceflightnews.model.Article
 import com.example.spaceflightnews.utils.favoriteButtonClicked
@@ -37,9 +36,9 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
         }
 
         private fun checkIfIsFavorite() {
-            if(currentArticle.isFavorite){
+            if (currentArticle.isFavorite) {
                 binding.favoriteButton.setImageResource(R.drawable.ic_filled_heart)
-            }else{
+            } else {
                 binding.favoriteButton.setImageResource(R.drawable.ic_favourite)
             }
         }

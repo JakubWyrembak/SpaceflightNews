@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.example.spaceflightnews.MainViewModel
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.FragmentArticleWebsiteBinding
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArticleWebsiteFragment : Fragment() {
 
     private var _binding: FragmentArticleWebsiteBinding? = null
     private val binding: FragmentArticleWebsiteBinding
         get() = _binding!!
+    private val viewModel: MainViewModel by sharedViewModel()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
