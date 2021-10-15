@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.spaceflightnews.databinding.FragmentArticleWebsiteBinding
-import com.example.spaceflightnews.utils.clearTextOnActionBar
-
 
 class ArticleWebsiteFragment : Fragment() {
 
@@ -29,11 +27,6 @@ class ArticleWebsiteFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
     }
 
     override fun onDestroy() {

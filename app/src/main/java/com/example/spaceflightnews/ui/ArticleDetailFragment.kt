@@ -1,17 +1,16 @@
 package com.example.spaceflightnews.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.FragmentArticleDetailBinding
 import com.example.spaceflightnews.model.Article
-import com.example.spaceflightnews.utils.clearTextOnActionBar
 
 class ArticleDetailFragment : Fragment() {
 
@@ -21,7 +20,7 @@ class ArticleDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         _binding = FragmentArticleDetailBinding.inflate(inflater)
 
         val args: ArticleDetailFragmentArgs by navArgs()
@@ -30,7 +29,7 @@ class ArticleDetailFragment : Fragment() {
     }
 
     private fun setupViews(article: Article) {
-        with(binding){
+        with(binding) {
             Glide.with(root)
                 .load(article.imageUrl)
                 .placeholder(R.drawable.ic_space_placeholder)
@@ -47,7 +46,7 @@ class ArticleDetailFragment : Fragment() {
         }
     }
 
-    private fun navigateToWebsite(url: String){
+    private fun navigateToWebsite(url: String) {
         findNavController().navigate(
             ArticleDetailFragmentDirections.actionArticleDetailFragmentToArticleWebsiteFragment(url)
         )

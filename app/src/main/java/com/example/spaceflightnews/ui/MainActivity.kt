@@ -22,6 +22,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
         navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -36,14 +40,16 @@ class MainActivity : AppCompatActivity() {
         return NavigationUI.navigateUp(navController, null)
     }
 
-    fun hideBottomNavigation(){
-        binding.navView.clearAnimation()
-        binding.navView.animate().translationY(
-            binding.navView.height.toFloat()
-        ).duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
+    fun hideBottomNavigation() {
+        binding.navView.apply {
+            clearAnimation()
+            animate().translationY(
+                height.toFloat()
+            ).duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
+        }
     }
 
-    fun showBottomNavigation(){
+    fun showBottomNavigation() {
         binding.navView.clearAnimation()
         binding.navView.animate().translationY(0F)
             .duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
