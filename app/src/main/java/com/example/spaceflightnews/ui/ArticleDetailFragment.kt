@@ -1,9 +1,7 @@
 package com.example.spaceflightnews.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -23,9 +21,28 @@ class ArticleDetailFragment : Fragment() {
     ): View {
         _binding = FragmentArticleDetailBinding.inflate(inflater)
 
+        setHasOptionsMenu(true)
+
         val args: ArticleDetailFragmentArgs by navArgs()
         setupViews(args.articleDetail)
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_article_detail, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.favorite_button -> {
+                // TODO
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupViews(article: Article) {
