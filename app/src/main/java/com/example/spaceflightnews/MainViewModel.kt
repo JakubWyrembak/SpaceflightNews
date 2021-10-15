@@ -9,9 +9,9 @@ import com.example.spaceflightnews.data.ApiClient
 import com.example.spaceflightnews.data.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
-class MainViewModel(private val repository: Repository = Repository(ApiClient.ARTICLES_SERVICE)) : ViewModel() {
+class MainViewModel(private val repository: Repository = Repository(ApiClient.ARTICLES_SERVICE)) :
+    ViewModel() {
 
     private var _articles = MutableLiveData<MainViewState>()
     val articles: LiveData<MainViewState>
@@ -22,23 +22,25 @@ class MainViewModel(private val repository: Repository = Repository(ApiClient.AR
         fetchArticles()
     }
 
-    fun onRefresh(){
+    fun onRefresh() {
         fetchArticles()
     }
 
     private fun fetchArticles() {
         viewModelScope.launch(Dispatchers.IO) {
-            try{
+            try {
                 val data = repository.getArticles(100)
                 _articles.postValue(MainViewState.Success(data))
-            }catch (e: Exception){
-                Log.e(TAG, e.message.toString())
-                _articles.postValue(MainViewState.Error(e.message.toString()))
+            } catch (e: Exception) {
+                e.message?.let {
+                    Log.e(TAG, it)
+                    _articles.postValue(MainViewState.Error(e.message))
+                }
             }
         }
     }
 
-    companion object{
+    companion object {
         private const val TAG = "MainViewModel"
     }
 }
