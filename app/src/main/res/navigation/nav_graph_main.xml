@@ -5,35 +5,41 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_articles">
 
+    <action
+        android:id="@+id/action_navigation_to_articleDetailFragment"
+        app:destination="@id/articleDetailFragment" />
+
     <fragment
         android:id="@+id/navigation_articles"
         android:name="com.example.spaceflightnews.ui.ArticlesFragment"
         android:label="@string/articles"
         tools:layout="@layout/fragment_articles">
-        <action
-            android:id="@+id/action_navigation_articles_to_articleDetailFragment"
-            app:destination="@id/articleDetailFragment" />
+        <argument
+            android:name="articlesKey"
+            android:defaultValue="@string/main_key"
+            app:argType="reference" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.example.spaceflightnews.ui.dashboard.DashboardFragment"
+        android:name="com.example.spaceflightnews.ui.ArticlesFragment"
         android:label="@string/history"
-        tools:layout="@layout/fragment_dashboard">
-        <action
-            android:id="@+id/action_navigation_history_to_articleDetailFragment"
-            app:destination="@id/articleDetailFragment" />
-
+        tools:layout="@layout/fragment_articles">
+        <argument
+            android:name="articlesKey"
+            android:defaultValue="@string/history_key"
+            app:argType="reference" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_favorite"
-        android:name="com.example.spaceflightnews.ui.notifications.NotificationsFragment"
-        android:label="@string/favorite"
-        tools:layout="@layout/fragment_notifications">
-        <action
-            android:id="@+id/action_navigation_favorite_to_articleDetailFragment"
-            app:destination="@id/articleDetailFragment" />
+        android:id="@+id/navigation_favorites"
+        android:name="com.example.spaceflightnews.ui.ArticlesFragment"
+        android:label="@string/favorites"
+        tools:layout="@layout/fragment_articles">
+        <argument
+            android:name="articlesKey"
+            android:defaultValue="@string/favorites_key"
+            app:argType="reference" />
     </fragment>
 
     <fragment

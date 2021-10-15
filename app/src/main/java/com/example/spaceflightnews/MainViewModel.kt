@@ -40,6 +40,26 @@ class MainViewModel(private val repository: Repository = Repository(ApiClient.AR
         }
     }
 
+    fun getHistoryArticles() = UserData.history
+    fun getFavoriteArticles() = UserData.favorites
+
+    /*fun getHistoryArticles(): MutableList<Article>? {
+    val historyArticles = mutableListOf<Article>()
+    viewModelScope.launch(Dispatchers.IO) {
+        try {
+            UserData.history.forEach {
+                historyArticles.add(repository.getArticle(it))
+            }
+        } catch (e: Exception) {
+            e.message?.let {
+                Log.e(TAG, it)
+                _articles.postValue(MainViewState.Error(e.message))
+            }
+        }
+    }
+    return historyArticles
+}*/
+
     companion object {
         private const val TAG = "MainViewModel"
     }

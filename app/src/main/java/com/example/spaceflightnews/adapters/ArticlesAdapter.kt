@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.example.spaceflightnews.R
+import com.example.spaceflightnews.UserData
 import com.example.spaceflightnews.databinding.SingleArticleBinding
 import com.example.spaceflightnews.model.Article
+import com.example.spaceflightnews.utils.favoriteButtonClicked
 
 class ArticlesAdapter(private val onClick: (Article) -> Unit) :
     ListAdapter<Article, ArticlesAdapter.ViewHolder>(DiffCallback) {
@@ -21,18 +25,27 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        var currentArticle: Article? = null
+        private lateinit var currentArticle: Article
 
         fun bind(article: Article) {
             currentArticle = article
             setupTextViews()
             setupSummaryVisibility()
             loadImage()
-            setupListener(article)
+            checkIfIsFavorite()
+            setupListener()
+        }
+
+        private fun checkIfIsFavorite() {
+            if(currentArticle.isFavorite){
+                binding.favoriteButton.setImageResource(R.drawable.ic_filled_heart)
+            }else{
+                binding.favoriteButton.setImageResource(R.drawable.ic_favourite)
+            }
         }
 
         private fun setupTextViews() {
-            currentArticle!!.let { article ->
+            currentArticle.let { article ->
                 with(binding) {
                     title.text = article.title
                     date.text = article.getUpdatedTime()
@@ -43,7 +56,7 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
 
         private fun setupSummaryVisibility() {
             binding.summary.visibility =
-                if (currentArticle!!.summary.length >= MAX_SUMMARY_LENGTH) {
+                if (currentArticle.summary.length >= MAX_SUMMARY_LENGTH) {
                     View.GONE
                 } else {
                     View.VISIBLE
@@ -52,19 +65,27 @@ class ArticlesAdapter(private val onClick: (Article) -> Unit) :
 
         private fun loadImage() {
             Glide.with(binding.root)
-                .load(currentArticle!!.imageUrl)
+                .load(currentArticle.imageUrl)
                 .placeholder(R.drawable.ic_space_placeholder)
                 .error(R.drawable.ic_error)
                 .into(binding.image)
         }
 
-        private fun setupListener(article: Article) {
+        private fun setupListener() {
             with(binding) {
-                articleCard.setOnClickListener { showDetailedArticle(article) }
+                articleCard.setOnClickListener { showDetailedArticle(currentArticle) }
                 favoriteButton.setOnClickListener {
-                    favoriteButton
-
+                    onFavoriteButtonClicked()
                 }
+            }
+        }
+
+        private fun onFavoriteButtonClicked() {
+            with(binding) {
+                favoriteButton.favoriteButtonClicked(currentArticle)
+
+                YoYo.with(Techniques.Pulse)
+                    .playOn(favoriteButton)
             }
         }
     }

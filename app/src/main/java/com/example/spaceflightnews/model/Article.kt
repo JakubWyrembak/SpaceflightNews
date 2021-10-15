@@ -22,7 +22,8 @@ data class Article(
     @Json(name = "updatedAt")
     val updated: String,
 
-    val favorite: Boolean = false,
+    // TODO change to val
+    var isFavorite: Boolean = false,
 ) : Parcelable {
     fun getUpdatedTime() =
         if (updated.length >= DATE_END_INDEX) updated.substring(0, DATE_END_INDEX)

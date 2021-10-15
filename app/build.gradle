@@ -38,6 +38,9 @@ android {
 
 // TODO
 dependencies {
+    // Animations
+    implementation 'com.daimajia.androidanimations:library:2.4@aar'
+
     // navigation
     def nav_version = "2.3.5"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

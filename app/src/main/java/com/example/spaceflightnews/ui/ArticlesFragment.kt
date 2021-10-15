@@ -6,10 +6,9 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spaceflightnews.MainViewModel
-import com.example.spaceflightnews.MainViewState
-import com.example.spaceflightnews.R
+import com.example.spaceflightnews.*
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
@@ -25,6 +24,8 @@ class ArticlesFragment : Fragment() {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
+    private var currentMode: ArticlesModes = ArticlesModes.MAIN
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,9 +33,22 @@ class ArticlesFragment : Fragment() {
         _binding = FragmentArticlesBinding.inflate(inflater)
         setHasOptionsMenu(true)
 
-        recyclerAdapter = ArticlesAdapter {
-            navigateToDetail(it)
+        getCurrentMode()
+        setupRecycler()
+        setupOtherViews()
+
+        viewModel.articles.observe(viewLifecycleOwner) {
+            checkCurrentViewState(it)
+        }
+
+        return binding.root
+    }
+
+    private fun setupRecycler() {
+        recyclerAdapter = ArticlesAdapter { article ->
+            navigateToDetail(article)
             if (requireActivity() is MainActivity) {
+                UserData.addToHistory(article)      // TODO viewModel
                 (activity as MainActivity).hideBottomNavigation()
             }
         }
@@ -43,16 +57,23 @@ class ArticlesFragment : Fragment() {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+    }
 
-        viewModel.articles.observe(viewLifecycleOwner) {
-            checkCurrentViewState(it)
+    private fun setupOtherViews() {
+        with(binding){
+            refreshLayout.setOnRefreshListener {
+                viewModel.onRefresh()
+            }
         }
+    }
 
-        binding.refreshLayout.setOnRefreshListener {
-            viewModel.onRefresh()
+    private fun getCurrentMode() {
+        val args: ArticlesFragmentArgs by navArgs()
+        currentMode = when (args.articlesKey) {
+            R.string.favorites_key -> ArticlesModes.FAVORITES
+            R.string.history_key -> ArticlesModes.HISTORY
+            else -> ArticlesModes.MAIN
         }
-
-        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -75,7 +96,7 @@ class ArticlesFragment : Fragment() {
             is MainViewState.Success -> {
                 binding.loadingProgressBar.visibility = View.GONE
                 binding.refreshLayout.isRefreshing = false
-                recyclerAdapter.submitList(stateMain.data)
+                submitData(stateMain.data)
             }
 
             is MainViewState.Loading -> {
@@ -88,6 +109,24 @@ class ArticlesFragment : Fragment() {
         }
     }
 
+    private fun submitData(allArticlesData: List<Article>) {
+        when (currentMode) {
+            ArticlesModes.MAIN -> {
+                recyclerAdapter.submitList(allArticlesData)
+            }
+
+            // TODO nie trzeba tego sprawdzać za każdym razem, może wystarczy tylko na początku
+            ArticlesModes.HISTORY -> {
+                recyclerAdapter.submitList(viewModel.getHistoryArticles())
+            }
+
+            ArticlesModes.FAVORITES -> {
+                recyclerAdapter.submitList(viewModel.getFavoriteArticles())
+            }
+        }
+
+    }
+
     override fun onResume() {
         super.onResume()
         if (requireActivity() is MainActivity) {
@@ -97,7 +136,7 @@ class ArticlesFragment : Fragment() {
 
     private fun navigateToDetail(article: Article) =
         findNavController().navigate(
-            ArticlesFragmentDirections.actionNavigationArticlesToArticleDetailFragment(article)
+            ArticlesFragmentDirections.actionNavigationToArticleDetailFragment(article)//actionNavigationArticlesMainToArticleDetailFragment(article)
         )
 
     override fun onDestroy() {
