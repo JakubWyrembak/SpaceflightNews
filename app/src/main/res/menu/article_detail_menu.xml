@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/share_button"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share"
+        android:id="@+id/favorite_button"
+        android:icon="@drawable/ic_favourite"
+        android:title="@string/add_to_favorites"
         app:showAsAction="always"
-        android:iconTint="@color/secondaryDarkColor"
         />
 
 </menu>

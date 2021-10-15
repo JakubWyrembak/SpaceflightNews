@@ -30,7 +30,7 @@ class ArticleDetailFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_article_detail, menu)
+        inflater.inflate(R.menu.article_detail_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

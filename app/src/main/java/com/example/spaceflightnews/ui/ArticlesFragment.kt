@@ -2,15 +2,14 @@ package com.example.spaceflightnews.ui
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.spaceflightnews.MainViewModel
 import com.example.spaceflightnews.MainViewState
+import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
@@ -31,13 +30,12 @@ class ArticlesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentArticlesBinding.inflate(inflater)
+        setHasOptionsMenu(true)
 
         recyclerAdapter = ArticlesAdapter {
             navigateToDetail(it)
             if (requireActivity() is MainActivity) {
                 (activity as MainActivity).hideBottomNavigation()
-                (activity as MainActivity).supportActionBar?.title =
-                    "" // TODO Tak nie dziala do konca
             }
         }
 
@@ -55,6 +53,21 @@ class ArticlesFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.articles_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.filter_button -> {
+                // TODO
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun checkCurrentViewState(stateMain: MainViewState) {

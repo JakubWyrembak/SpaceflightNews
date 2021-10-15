@@ -30,7 +30,7 @@ class ArticleWebsiteFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_article_website, menu)
+        inflater.inflate(R.menu.article_website_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
