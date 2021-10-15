@@ -40,21 +40,22 @@ class SplashActivity : AppCompatActivity() {
 
     private fun animate() {
         val splashAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_splash)
-        splashAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-            }
-
-            // TODO coroutines?
-            override fun onAnimationEnd(animation: Animation?) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                    finish()
-                }, 1000)
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {}
-        })
+        splashAnimation.setAnimationListener(getAnimationListener())
 
         binding.rocketIcon.animation = splashAnimation
+    }
+
+    private fun getAnimationListener() = object : Animation.AnimationListener {
+        // TODO coroutines?
+        override fun onAnimationEnd(animation: Animation?) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                finish()
+            }, 0)
+        }
+
+        override fun onAnimationStart(animation: Animation?) {}
+
+        override fun onAnimationRepeat(animation: Animation?) {}
     }
 }
