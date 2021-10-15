@@ -79,7 +79,6 @@ class ArticlesFragment : Fragment() {
         super.onResume()
         if (requireActivity() is MainActivity) {
             (activity as MainActivity).showBottomNavigation()
-            (activity as MainActivity).showActionBar()
         }
     }
 

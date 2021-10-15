@@ -55,14 +55,6 @@ class MainActivity : AppCompatActivity() {
             .duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
     }
 
-    fun hideActionBar() {
-        supportActionBar?.hide()
-    }
-
-    fun showActionBar() {
-        supportActionBar?.show()
-    }
-
     companion object {
         private const val TAG = "MainActivity"
         private const val BOTTOM_NAVIGATION_ANIMATION_DURATION = 300L
