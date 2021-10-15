@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.spaceflightnews.MainViewModel
+import com.example.spaceflightnews.MainViewState
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
@@ -35,31 +36,50 @@ class ArticlesFragment : Fragment() {
             navigateToDetail(it)
             if (requireActivity() is MainActivity) {
                 (activity as MainActivity).hideBottomNavigation()
+                (activity as MainActivity).supportActionBar?.title =
+                    "" // TODO Tak nie dziala do konca
             }
         }
 
-        binding.articles.adapter = recyclerAdapter
-        binding.articles.layoutManager = LinearLayoutManager(requireContext())
+        binding.articles.apply {
+            adapter = recyclerAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
 
         viewModel.articles.observe(viewLifecycleOwner) {
-            // TODO if != null itp
-            recyclerAdapter.submitList(it.data)
-            Log.v(TAG, it.data.toString())
+            checkCurrentViewState(it)
         }
 
         binding.refreshLayout.setOnRefreshListener {
-            Log.v(TAG, "Odświeżam")
-            recyclerAdapter.submitList(viewModel.articles.value?.data)
-            binding.refreshLayout.isRefreshing = false
+            viewModel.onRefresh()
         }
 
         return binding.root
+    }
+
+    private fun checkCurrentViewState(stateMain: MainViewState) {
+        when (stateMain) {
+            is MainViewState.Success -> {
+                binding.loadingProgressBar.visibility = View.GONE
+                binding.refreshLayout.isRefreshing = false
+                recyclerAdapter.submitList(stateMain.data)
+            }
+
+            is MainViewState.Loading -> {
+                binding.loadingProgressBar.visibility = View.VISIBLE
+            }
+
+            is MainViewState.Error -> {
+                stateMain.message?.let { Log.e(TAG, it) }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         if (requireActivity() is MainActivity) {
             (activity as MainActivity).showBottomNavigation()
+            (activity as MainActivity).showActionBar()
         }
     }
 
