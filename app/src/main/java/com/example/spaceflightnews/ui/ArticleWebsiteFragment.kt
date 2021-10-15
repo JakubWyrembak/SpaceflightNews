@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.spaceflightnews.databinding.FragmentArticleWebsiteBinding
+import com.example.spaceflightnews.utils.clearTextOnActionBar
 
 
 class ArticleWebsiteFragment : Fragment() {
@@ -20,14 +21,19 @@ class ArticleWebsiteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentArticleWebsiteBinding.inflate(inflater)
-        binding.webView.settings.javaScriptEnabled = true
+
+        val args: ArticleWebsiteFragmentArgs by navArgs()
+        binding.webView.apply {
+            loadUrl(args.websiteUrl)
+            settings.javaScriptEnabled = true
+        }
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val args: ArticleWebsiteFragmentArgs by navArgs()
-        binding.webView.loadUrl(args.websiteUrl)
+    override fun onResume() {
+        super.onResume()
+
     }
 
     override fun onDestroy() {

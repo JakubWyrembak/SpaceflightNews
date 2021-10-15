@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.FragmentArticleDetailBinding
 import com.example.spaceflightnews.model.Article
+import com.example.spaceflightnews.utils.clearTextOnActionBar
 
 class ArticleDetailFragment : Fragment() {
 
@@ -22,13 +23,10 @@ class ArticleDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View{
         _binding = FragmentArticleDetailBinding.inflate(inflater)
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val args: ArticleDetailFragmentArgs by navArgs()
         setupViews(args.articleDetail)
+        return binding.root
     }
 
     private fun setupViews(article: Article) {

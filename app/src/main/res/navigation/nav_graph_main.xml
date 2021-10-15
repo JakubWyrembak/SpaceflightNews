@@ -39,7 +39,6 @@
     <fragment
         android:id="@+id/articleDetailFragment"
         android:name="com.example.spaceflightnews.ui.ArticleDetailFragment"
-        android:label="fragment_article_detail"
         tools:layout="@layout/fragment_article_detail">
 
         <argument
@@ -53,7 +52,6 @@
     <fragment
         android:id="@+id/articleWebsiteFragment"
         android:name="com.example.spaceflightnews.ui.ArticleWebsiteFragment"
-        android:label="fragment_article_website"
         tools:layout="@layout/fragment_article_website">
 
         <argument
