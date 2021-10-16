@@ -3,17 +3,18 @@ package com.example.spaceflightnews.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.spaceflightnews.MainViewModel
 import com.example.spaceflightnews.R
-import com.example.spaceflightnews.UserData
 import com.example.spaceflightnews.databinding.FragmentArticleDetailBinding
 import com.example.spaceflightnews.model.Article
-import com.example.spaceflightnews.utils.favoriteButtonClicked
+import com.example.spaceflightnews.utils.changeFavoriteButtonIcon
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArticleDetailFragment : Fragment() {
 
@@ -21,6 +22,8 @@ class ArticleDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var article: Article
+
+    private val viewModel: MainViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +44,7 @@ class ArticleDetailFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.article_detail_menu, menu)
         menu.findItem(R.id.favorite_button).setIcon(
-            if (article.isFavorite) {
+            if (article.isFavorite()) {
                 R.drawable.ic_filled_heart
             } else {
                 R.drawable.ic_favourite
@@ -54,12 +57,14 @@ class ArticleDetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.favorite_button -> {
-                item.itemId
-                requireActivity().findViewById<View>(item.itemId).favoriteButtonClicked(article)
+                requireActivity().findViewById<View>(item.itemId).changeFavoriteButtonIcon(article)
+                lifecycleScope.launch {
+                    Log.v(TAG, "Menu item dodaje/usuwam")
+                    viewModel.addOrRemoveFavorite(article.id)
+                }
                 return true
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 

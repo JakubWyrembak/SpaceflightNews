@@ -1,7 +1,7 @@
 package com.example.spaceflightnews.model
 
-import android.graphics.Bitmap
 import android.os.Parcelable
+import com.example.spaceflightnews.UserData
 import com.example.spaceflightnews.utils.DATE_END_INDEX
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
@@ -22,11 +22,10 @@ data class Article(
     val summary: String,
     @Json(name = "updatedAt")
     val updated: String,
-
-    // TODO change to val
-    var isFavorite: Boolean = false,
 ) : Parcelable {
     fun getUpdatedTime() =
         if (updated.length >= DATE_END_INDEX) updated.substring(0, DATE_END_INDEX)
         else updated
+
+    fun isFavorite() = this.id in UserData.favorites
 }

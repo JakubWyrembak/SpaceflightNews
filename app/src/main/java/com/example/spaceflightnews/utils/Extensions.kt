@@ -12,18 +12,23 @@ import com.example.spaceflightnews.UserData
 import com.example.spaceflightnews.model.Article
 
 @SuppressLint("RestrictedApi")
-fun View.favoriteButtonClicked(article: Article) {
+fun View.changeFavoriteButtonIcon(article: Article) {
 
-    UserData.onFavoriteButtonClicked(article)
     val drawableIcon =
         AppCompatResources.getDrawable(
             context,
-            if (article.isFavorite) R.drawable.ic_filled_heart else R.drawable.ic_favourite
+            if (article.isFavorite()) {
+                Log.v("EXTENSIONS", "FILLED")
+                R.drawable.ic_favourite
+            } else {
+                Log.v("EXTENSIONS", "EMPTY")
+                R.drawable.ic_filled_heart
+            }
         )!!
 
     when (this) {
         is AppCompatImageButton -> {
-            Log.v("Extensions", "AppCompatImageView")
+            Log.v("Extensions", "AppCompatImageButton")
             setImageDrawable(drawableIcon)
         }
 

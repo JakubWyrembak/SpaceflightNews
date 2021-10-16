@@ -53,30 +53,30 @@ class ArticlesFragment : Fragment() {
 
             ArticlesModes.HISTORY -> {
                 viewModel.historyArticles.observe(viewLifecycleOwner) {
-                    recyclerAdapter.submitList(viewModel.historyArticles.value)
+                    recyclerAdapter.submitList(it)
                 }
             }
 
             ArticlesModes.FAVORITES -> {
-                recyclerAdapter.submitList(viewModel.getFavoriteArticles())
+                lifecycleScope.launch {
+                    viewModel.loadFavorites()
+                }
+                viewModel.favoriteArticles.observe(viewLifecycleOwner) {
+                    Log.e(TAG, "fav ${it.size}")
+                    recyclerAdapter.submitList(it)
+                }
             }
         }
     }
 
     private fun setupRecycler() {
-        recyclerAdapter = ArticlesAdapter { article ->
-            lifecycleScope.launch {
-                if (requireActivity() is MainActivity) {
-                    // We don't want to change order when we are in history mode
-                    if (currentMode != ArticlesModes.HISTORY) {
-                        viewModel.addToHistory(article.id)
-                    }
-                    (activity as MainActivity).hideBottomNavigation()
-                }
-            }
-
-            navigateToDetail(article)
-        }
+        recyclerAdapter = ArticlesAdapter(
+            onFavoriteClick = {
+                onFavoriteClick(it.id)
+            },
+            onArticleClick = { article: Article ->
+                onArticleClick(article)
+            })
 
         binding.articles.apply {
             adapter = recyclerAdapter
@@ -84,10 +84,28 @@ class ArticlesFragment : Fragment() {
         }
     }
 
+    private fun onFavoriteClick(id: Int) {
+        lifecycleScope.launch {
+            viewModel.addOrRemoveFavorite(id)
+        }
+    }
+
+    private fun onArticleClick(article: Article) {
+        lifecycleScope.launch {
+            if (requireActivity() is MainActivity) {
+                if (currentMode != ArticlesModes.HISTORY) {
+                    viewModel.addToHistory(article.id)
+                }
+                (activity as MainActivity).hideBottomNavigation()
+            }
+        }
+        navigateToDetail(article)
+    }
+
     private fun setupOtherViews() {
         with(binding) {
             refreshLayout.setOnRefreshListener {
-                viewModel.onRefresh()
+                viewModel.loadData()
             }
         }
     }

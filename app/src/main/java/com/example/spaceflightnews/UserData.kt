@@ -1,17 +1,14 @@
 package com.example.spaceflightnews
 
-import com.example.spaceflightnews.model.Article
-
 object UserData {
-    var historyIds = mutableListOf<Int>()
-    var favorites = mutableListOf<Article>()
+    var history = mutableListOf<Int>()
+    var favorites = mutableListOf<Int>()
 
-    fun onFavoriteButtonClicked(article: Article) {
-        if (article.isFavorite) {
-            favorites.remove(article)
+    fun addOrRemoveFavorite(articleId: Int) {
+        if (articleId in favorites) {
+            favorites.remove(articleId)
         } else {
-            favorites.add(article)
+            favorites.add(articleId)
         }
-        article.isFavorite = article.isFavorite.not()
     }
 }
