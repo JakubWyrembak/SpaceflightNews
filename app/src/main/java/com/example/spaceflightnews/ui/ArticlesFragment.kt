@@ -8,7 +8,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spaceflightnews.*
+import com.example.spaceflightnews.ArticlesModes
+import com.example.spaceflightnews.MainViewModel
+import com.example.spaceflightnews.MainViewState
+import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
@@ -23,7 +26,6 @@ class ArticlesFragment : Fragment() {
 
     private lateinit var recyclerAdapter: ArticlesAdapter
     private val viewModel: MainViewModel by sharedViewModel()
-    private var currentMode: ArticlesModes = ArticlesModes.MAIN
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,33 +39,21 @@ class ArticlesFragment : Fragment() {
 
         setupCurrentMode()
 
+        Log.v(TAG, "OnCreateView")
+
         return binding.root
     }
 
     private fun setupCurrentMode() {
-        when (getCurrentMode()) {
-            ArticlesModes.MAIN -> {
-                viewModel.articles.observe(viewLifecycleOwner) {
-                    checkCurrentViewState(it)
-                }
+        val currentData =
+            when (getCurrentMode()) {
+                ArticlesModes.MAIN -> viewModel.articles
+                ArticlesModes.HISTORY -> viewModel.historyArticles
+                ArticlesModes.FAVORITES -> viewModel.favoriteArticles
             }
 
-            ArticlesModes.HISTORY -> {
-                viewModel.historyArticles.observe(viewLifecycleOwner) {
-                    recyclerAdapter.submitList(it)
-                }
-            }
-
-            ArticlesModes.FAVORITES -> {
-                // TODO lifecycle to nie w activity chyba sie powinno
-                lifecycleScope.launch {
-                    viewModel.loadFavorites()
-                }
-                viewModel.favoriteArticles.observe(viewLifecycleOwner) {
-                    Log.e(TAG, "fav ${it.size} ${UserData.favorites}")
-                    recyclerAdapter.submitList(it)
-                }
-            }
+        currentData.observe(viewLifecycleOwner) {
+            checkCurrentViewState(it)
         }
     }
 
@@ -79,21 +69,19 @@ class ArticlesFragment : Fragment() {
         binding.articles.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
     private fun onFavoriteClick(id: Int) {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.addOrRemoveFavorite(id)
         }
     }
 
     private fun onArticleClick(article: Article) {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             if (requireActivity() is MainActivity) {
-                if (currentMode != ArticlesModes.HISTORY) {
-                    viewModel.addToHistory(article.id)
-                }
                 (activity as MainActivity).hideBottomNavigation()
             }
         }
@@ -136,11 +124,13 @@ class ArticlesFragment : Fragment() {
         when (state) {
             is MainViewState.Success -> {
                 binding.loadingProgressBar.visibility = View.GONE
+                binding.articles.visibility = View.VISIBLE
                 binding.refreshLayout.isRefreshing = false
                 recyclerAdapter.submitList(state.data)
             }
 
             is MainViewState.Loading -> {
+                binding.articles.visibility = View.GONE
                 binding.loadingProgressBar.visibility = View.VISIBLE
             }
 
@@ -159,7 +149,7 @@ class ArticlesFragment : Fragment() {
 
     private fun navigateToDetail(article: Article) =
         findNavController().navigate(
-            ArticlesFragmentDirections.actionNavigationToArticleDetailFragment(article)//actionNavigationArticlesMainToArticleDetailFragment(article)
+            ArticlesFragmentDirections.actionNavigationToArticleDetailFragment(article)
         )
 
     override fun onDestroy() {

@@ -36,6 +36,11 @@ class ArticleDetailFragment : Fragment() {
         val args: ArticleDetailFragmentArgs by navArgs()
         article = args.articleDetail
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.addToHistory(article.id)
+        }
+
+
         setupViews()
 
         return binding.root
@@ -60,7 +65,9 @@ class ArticleDetailFragment : Fragment() {
                 requireActivity().findViewById<View>(item.itemId).changeFavoriteButtonIcon(article)
                 lifecycleScope.launch {
                     Log.v(TAG, "Menu item dodaje/usuwam")
-                    viewModel.addOrRemoveFavorite(article.id)
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.addOrRemoveFavorite(article.id)
+                    }
                 }
                 return true
             }

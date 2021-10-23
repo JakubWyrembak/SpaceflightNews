@@ -10,6 +10,7 @@ import com.example.spaceflightnews.model.Article
 import com.example.spaceflightnews.utils.FAVORITES_ID
 import com.example.spaceflightnews.utils.HISTORY_ID
 import com.example.spaceflightnews.utils.Preferences
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -25,37 +26,37 @@ class MainViewModel(
         get() = _articles
 
     // History screen
-    private var _historyArticles = MutableLiveData<ArrayList<Article>>()
-    val historyArticles: LiveData<ArrayList<Article>>
+    private var _historyArticles = MutableLiveData<MainViewState>()
+    val historyArticles: LiveData<MainViewState>
         get() = _historyArticles
 
     // Favorite screen
-    private var _favoriteArticles = MutableLiveData<ArrayList<Article>>()
-    val favoriteArticles: LiveData<ArrayList<Article>>
+    private var _favoriteArticles = MutableLiveData<MainViewState>()
+    val favoriteArticles: LiveData<MainViewState>
         get() = _favoriteArticles
 
     init {
         _articles.postValue(MainViewState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             fetchArticles()
-
-            _historyArticles.postValue(arrayListOf())
-            loadHistoryArticles()
-
-            _favoriteArticles.postValue(arrayListOf())
-            loadFavorites()
         }
     }
 
     fun loadData() {
         viewModelScope.launch(Dispatchers.IO) {
             fetchArticles()
+            loadPreferences()
         }
+    }
+
+    suspend fun loadUserDataArticles(){
+        loadHistoryArticles()
+        loadFavoriteArticles()
     }
 
     private suspend fun fetchArticles() {
         try {
-            val data = repository.getArticles(100)
+            val data = repository.getArticles(25)
             _articles.postValue(MainViewState.Success(data))
         } catch (e: Exception) {
             e.message?.let {
@@ -66,18 +67,26 @@ class MainViewModel(
 
     }
 
-    private suspend fun loadHistoryArticles() {
+    suspend fun loadHistoryArticles() {
+        _historyArticles.postValue(MainViewState.Loading)
+        val articles = mutableListOf<Article>()
+
         UserData.history.forEach {
-            Log.v(TAG, "Wstepnie historia")
-            Log.v(TAG, "historia -> $it")
-            loadSingleArticle(it, historyArticles.value)
+            Log.v(TAG, "Historia laduje dane -> $it")
+            loadSingleArticle(it, articles)
         }
+
+        _historyArticles.postValue(MainViewState.Success(articles))
     }
 
-    private suspend fun loadSingleArticle(id: Int, data: ArrayList<Article>?) {
+    private suspend fun loadSingleArticle(id: Int, data: MutableList<Article>) {
         try {
+            Log.v(TAG, "Probuje dodac $id")
             val currArticle = repository.getArticle(id)
-            data?.add(0, currArticle)
+            data.add(0, currArticle)
+        } catch (ex: CancellationException) {
+            Log.e(TAG, "CANCELLATION ${ex.message}")
+            throw ex // Must let the CancellationException propagate
         } catch (e: Exception) {
             e.message?.let {
                 Log.e(TAG, it)
@@ -86,54 +95,102 @@ class MainViewModel(
     }
 
     // TODO jedna funkcja z tych dwóch
+    // TODO żeby nie było za dużo
     suspend fun addToHistory(id: Int) {
+        val currData: MutableList<Article>
+        if (historyArticles.value is MainViewState.Success) {
+            currData = (historyArticles.value as MainViewState.Success).data as MutableList<Article>
+
+            _historyArticles.postValue(MainViewState.Success(currData))
+        } else {
+            currData = mutableListOf()
+        }
+
         if (id in UserData.history) {
             UserData.history.remove(id)
-            _historyArticles.value?.removeIf { it.id == id }
+            currData.removeIf {
+                it.id == id
+            }
         }
+
         UserData.history.add(id)
-        loadSingleArticle(id, historyArticles.value)
+        loadSingleArticle(id, currData)
+        _historyArticles.postValue(MainViewState.Success(currData))
     }
 
     suspend fun addOrRemoveFavorite(id: Int) {
-        if (id in UserData.favorites) {
-            Log.v(TAG, "USUWAM")
-            _favoriteArticles.value?.removeIf { it.id == id }
+        val currData: MutableList<Article>
+        if (favoriteArticles.value is MainViewState.Success) {
+            currData =
+                (favoriteArticles.value as MainViewState.Success).data as MutableList<Article>
         } else {
-            Log.v(TAG, "DODAJE")
-            loadSingleArticle(id, favoriteArticles.value)
+            currData = mutableListOf()
         }
-        UserData.addOrRemoveFavorite(id)
+
+        if (id in UserData.favorites) {
+            UserData.favorites.remove(id)
+            currData.removeIf {
+                it.id == id
+            }
+            _favoriteArticles.postValue(MainViewState.Success(currData))
+        } else {
+            UserData.favorites.add(id)
+            loadSingleArticle(id, currData)
+            _favoriteArticles.postValue(MainViewState.Success(currData))
+        }
     }
 
-    suspend fun loadFavorites() {
+    private suspend fun loadFavoriteArticles() {
+        _favoriteArticles.postValue(MainViewState.Loading)
+        val articles = mutableListOf<Article>()
         UserData.favorites.forEach {
-            Log.v(TAG, "wstepnie ulubione $it")
-
-            Log.v(TAG, "fav -> $it")
-            loadSingleArticle(it, favoriteArticles.value)
-
+            Log.v(TAG, "Ulubione laduje dane -> $it")
+            loadSingleArticle(it, articles)
         }
+
+        _favoriteArticles.postValue(MainViewState.Success(articles))
     }
 
-    suspend fun loadPreferences() {
-        val articlesFav = preferences.getArticles(FAVORITES_ID)
-        Log.v(TAG, "$articlesFav")
-        articlesFav.map {
-            Log.v(TAG, "Mapuje fav -> $it")
-            addOrRemoveFavorite(it)
+    /*fun onFavoritesClick(){
+        _favoriteArticles.postValue(arrayListOf())
+        Log.v(TAG, "onFavoritesClick")
+        viewModelScope.launch {
+            Log.v(TAG, "Wczytuje")
+            loadFavorites()
         }
-        preferences.getArticles(HISTORY_ID).map {
-            addToHistory(it)
+    }*/
+
+    fun addToUserDataHistory(articleId: Int) {
+        if (articleId in UserData.history) {
+            UserData.history.removeIf {
+                it == articleId
+            }
         }
-        Log.v(TAG, "Preferences loaded ${UserData.favorites}, ")
+        UserData.history.add(articleId)
     }
 
+
+    // PREFERENCES  ==============================================================
     fun savePreferences() {
         Log.v(TAG, "SAVING ${UserData.favorites} ${UserData.history}")
         preferences.saveArticles(UserData.favorites, FAVORITES_ID)
         preferences.saveArticles(UserData.history, HISTORY_ID)
     }
+
+    suspend fun loadPreferences() {
+        preferences.getArticles(HISTORY_ID).map {
+            UserData.history.add(it)
+        //addToHistory(it)
+        }
+
+        preferences.getArticles(FAVORITES_ID).map {
+            UserData.favorites.add(it)
+            //addOrRemoveFavorite(it)
+        }
+
+        Log.v(TAG, "Preferences loaded ${UserData.favorites}, ${UserData.history}")
+    }
+
 
     companion object {
         private const val TAG = "MainViewModel"

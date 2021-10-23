@@ -1,6 +1,7 @@
 package com.example.spaceflightnews.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -12,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.spaceflightnews.MainViewModel
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.ActivityMainBinding
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        lifecycleScope.launch{
+            viewModel.loadUserDataArticles()
+        }
 
         setupNavigation()
     }
@@ -52,13 +58,22 @@ class MainActivity : AppCompatActivity() {
             animate().translationY(
                 height.toFloat()
             ).duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
+
+            lifecycleScope.launchWhenCreated {
+                delay(BOTTOM_NAVIGATION_ANIMATION_DURATION)
+                visibility = View.GONE
+            }
         }
     }
 
     fun showBottomNavigation() {
-        binding.navView.clearAnimation()
-        binding.navView.animate().translationY(0F)
-            .duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
+        binding.navView.apply{
+            visibility = View.VISIBLE
+            clearAnimation()
+            animate().translationY(0F)
+                .duration = BOTTOM_NAVIGATION_ANIMATION_DURATION
+
+        }
     }
 
     override fun onPause() {
