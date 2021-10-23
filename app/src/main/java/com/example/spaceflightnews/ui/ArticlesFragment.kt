@@ -124,13 +124,11 @@ class ArticlesFragment : Fragment() {
         when (state) {
             is MainViewState.Success -> {
                 binding.loadingProgressBar.visibility = View.GONE
-                binding.articles.visibility = View.VISIBLE
                 binding.refreshLayout.isRefreshing = false
                 recyclerAdapter.submitList(state.data)
             }
 
             is MainViewState.Loading -> {
-                binding.articles.visibility = View.GONE
                 binding.loadingProgressBar.visibility = View.VISIBLE
             }
 
