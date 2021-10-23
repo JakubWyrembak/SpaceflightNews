@@ -66,7 +66,7 @@ class ArticlesFragment : Fragment() {
                 onArticleClick(article)
             })
 
-        binding.articles.apply {
+        binding.articlesRecyclerView.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
             layoutManager = LinearLayoutManager(requireContext())
