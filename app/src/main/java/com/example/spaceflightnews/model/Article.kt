@@ -22,10 +22,16 @@ data class Article(
     val summary: String,
     @Json(name = "updatedAt")
     val updated: String,
+    @Json(name = "publishedAt")
+    val published: String,
 ) : Parcelable {
-    fun getUpdatedTime() =
-        if (updated.length >= DATE_END_INDEX) updated.substring(0, DATE_END_INDEX)
-        else updated
+    fun getPublishedTime() = reformatDate(published)
+
+    fun getUpdatedTime() = reformatDate(updated)
+
+    private fun reformatDate(date: String) =
+        if (date.length >= DATE_END_INDEX) date.substring(0, DATE_END_INDEX)
+        else date
 
     fun isFavorite() = this.id in UserData.favorites
 }

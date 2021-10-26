@@ -84,9 +84,9 @@ class ArticleDetailFragment : Fragment() {
 
             title.text = article.title
             summary.text = article.summary
-            updatedText.text = article.getUpdatedTime()
+            publishedText.text = article.getPublishedTime()
             siteText.text = article.site
-
+            lastUpdate.text = getString(R.string.updated, article.getUpdatedTime())
             websiteButton.setOnClickListener {
                 navigateToWebsite(article.url)
             }

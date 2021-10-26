@@ -24,7 +24,7 @@
             tools:src="@drawable/ic_space_placeholder" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/siteText"
+            android:id="@+id/site_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/primaryLightColor"
@@ -35,7 +35,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/updatedText"
+            android:id="@+id/published_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/primaryLightColor"
@@ -57,7 +57,7 @@
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/siteText" />
+            app:layout_constraintTop_toBottomOf="@id/site_text" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title"
@@ -79,8 +79,18 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            />
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/last_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:padding="16dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

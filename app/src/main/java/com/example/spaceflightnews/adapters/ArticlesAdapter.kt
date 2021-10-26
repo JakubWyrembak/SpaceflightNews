@@ -52,7 +52,7 @@ class ArticlesAdapter(
             currentArticle.let { article ->
                 with(binding) {
                     title.text = article.title
-                    dateText.text = article.getUpdatedTime()
+                    dateText.text = article.getPublishedTime()
                     summary.text = article.summary
                 }
             }
