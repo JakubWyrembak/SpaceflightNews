@@ -1,4 +1,4 @@
-package com.example.spaceflightnews
+package com.example.spaceflightnews.states
 
 import com.example.spaceflightnews.model.Article
 

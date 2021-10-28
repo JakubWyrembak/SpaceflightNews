@@ -1,10 +1,13 @@
-package com.example.spaceflightnews
+package com.example.spaceflightnews.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.spaceflightnews.states.ArticlesModes
+import com.example.spaceflightnews.states.MainViewState
+import com.example.spaceflightnews.states.UserData
 import com.example.spaceflightnews.data.Repository
 import com.example.spaceflightnews.model.Article
 import com.example.spaceflightnews.utils.FAVORITES_ID

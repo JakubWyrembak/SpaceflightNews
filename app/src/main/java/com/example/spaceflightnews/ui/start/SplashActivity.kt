@@ -1,4 +1,4 @@
-package com.example.spaceflightnews.ui
+package com.example.spaceflightnews.ui.start
 
 import android.content.Intent
 import android.os.Build
@@ -11,15 +11,16 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.spaceflightnews.MainViewModel
+import com.example.spaceflightnews.ui.viewmodel.MainViewModel
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.ActivitySplashBinding
+import com.example.spaceflightnews.ui.main.MainActivity
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var viewModel:MainViewModel
+    private lateinit var viewModel: MainViewModel
 
     private lateinit var binding: ActivitySplashBinding
 

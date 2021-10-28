@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.example.spaceflightnews.R
-import com.example.spaceflightnews.UserData
+import com.example.spaceflightnews.states.UserData
 import com.example.spaceflightnews.databinding.SingleArticleBinding
 import com.example.spaceflightnews.model.Article
 import com.example.spaceflightnews.utils.changeFavoriteButtonIcon

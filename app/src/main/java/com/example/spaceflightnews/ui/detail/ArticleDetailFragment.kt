@@ -1,4 +1,4 @@
-package com.example.spaceflightnews.ui
+package com.example.spaceflightnews.ui.detail
 
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.example.spaceflightnews.MainViewModel
+import com.example.spaceflightnews.ui.viewmodel.MainViewModel
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.FragmentArticleDetailBinding
 import com.example.spaceflightnews.model.Article
@@ -39,7 +39,6 @@ class ArticleDetailFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.addToHistory(article.id)
         }
-
 
         setupViews()
 

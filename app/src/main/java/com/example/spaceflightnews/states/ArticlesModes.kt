@@ -1,4 +1,4 @@
-package com.example.spaceflightnews
+package com.example.spaceflightnews.states
 
 enum class ArticlesModes {
     MAIN,

@@ -1,4 +1,4 @@
-package com.example.spaceflightnews.ui
+package com.example.spaceflightnews.ui.main
 
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +8,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spaceflightnews.ArticlesModes
-import com.example.spaceflightnews.MainViewModel
-import com.example.spaceflightnews.MainViewState
+import com.example.spaceflightnews.states.ArticlesModes.*
+import com.example.spaceflightnews.states.ArticlesModes
+import com.example.spaceflightnews.ui.viewmodel.MainViewModel
+import com.example.spaceflightnews.states.MainViewState
+import com.example.spaceflightnews.states.MainViewState.*
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
@@ -47,9 +49,9 @@ class ArticlesFragment : Fragment() {
     private fun setupCurrentMode() {
         val currentData =
             when (getCurrentMode()) {
-                ArticlesModes.MAIN -> viewModel.articles
-                ArticlesModes.HISTORY -> viewModel.historyArticles
-                ArticlesModes.FAVORITES -> viewModel.favoriteArticles
+                MAIN -> viewModel.articles
+                HISTORY -> viewModel.historyArticles
+                FAVORITES -> viewModel.favoriteArticles
             }
 
         currentData.observe(viewLifecycleOwner) {
@@ -98,9 +100,9 @@ class ArticlesFragment : Fragment() {
     private fun getCurrentMode(): ArticlesModes {
         val args: ArticlesFragmentArgs by navArgs()
         return when (args.articlesKey) {
-            R.string.favorites_key -> ArticlesModes.FAVORITES
-            R.string.history_key -> ArticlesModes.HISTORY
-            else -> ArticlesModes.MAIN
+            R.string.favorites_key -> FAVORITES
+            R.string.history_key -> HISTORY
+            else -> MAIN
         }
     }
 
@@ -121,16 +123,9 @@ class ArticlesFragment : Fragment() {
 
     private fun checkCurrentViewState(state: MainViewState) {
         when (state) {
-            is MainViewState.Success -> {
-                onSuccess(state.data)
-            }
-
-            is MainViewState.Loading -> {
-                onLoading()
-            }
-
-            is MainViewState.Error -> {
-
+            is Success -> onSuccess(state.data)
+            is Loading -> onLoading()
+            is Error -> {
                 state.message?.let {
                     onError(it)
                 }
@@ -150,17 +145,20 @@ class ArticlesFragment : Fragment() {
     }
 
     private fun onSuccess(articles: List<Article>) {
-        binding.loadingProgressBar.makeGone()
-        binding.refreshLayout.isRefreshing = false
-        recyclerAdapter.submitList(articles)
+        with(binding) {
+            loadingProgressBar.makeGone()
+            refreshLayout.isRefreshing = false
 
-        binding.emptyListText.apply {
-            if (articles.isEmpty()) {
-                makeVisible()
-            } else {
-                makeGone()
+            emptyListText.apply {
+                if (articles.isEmpty()) {
+                    makeVisible()
+                } else {
+                    makeGone()
+                }
             }
         }
+
+        recyclerAdapter.submitList(articles)
     }
 
     override fun onResume() {

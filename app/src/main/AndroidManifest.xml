@@ -10,15 +10,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name="com.example.spaceflightnews.MainApplication"
+        android:name="com.example.spaceflightnews.ui.start.MainApplication"
         android:theme="@style/Theme.SpaceflightNews"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".ui.SplashActivity"
+            android:name=".ui.start.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.SpaceflightNews.NoActionBar">
             <intent-filter>

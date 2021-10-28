@@ -1,8 +1,7 @@
 package com.example.spaceflightnews.model
 
 import android.os.Parcelable
-import com.example.spaceflightnews.UserData
-import com.example.spaceflightnews.utils.DATE_END_INDEX
+import com.example.spaceflightnews.states.UserData
 import com.example.spaceflightnews.utils.reformatDate
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize

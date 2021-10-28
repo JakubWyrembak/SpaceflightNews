@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_articles"
-        android:name="com.example.spaceflightnews.ui.ArticlesFragment"
+        android:name="com.example.spaceflightnews.ui.main.ArticlesFragment"
         android:label="@string/articles"
         tools:layout="@layout/fragment_articles">
         <argument
@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.example.spaceflightnews.ui.ArticlesFragment"
+        android:name="com.example.spaceflightnews.ui.main.ArticlesFragment"
         android:label="@string/history"
         tools:layout="@layout/fragment_articles">
         <argument
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.example.spaceflightnews.ui.ArticlesFragment"
+        android:name="com.example.spaceflightnews.ui.main.ArticlesFragment"
         android:label="@string/favorites"
         tools:layout="@layout/fragment_articles">
         <argument
@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/articleDetailFragment"
-        android:name="com.example.spaceflightnews.ui.ArticleDetailFragment"
+        android:name="com.example.spaceflightnews.ui.detail.ArticleDetailFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_article_detail">
 
@@ -59,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/articleWebsiteFragment"
-        android:name="com.example.spaceflightnews.ui.ArticleWebsiteFragment"
+        android:name="com.example.spaceflightnews.ui.detail.ArticleWebsiteFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_article_website">
 

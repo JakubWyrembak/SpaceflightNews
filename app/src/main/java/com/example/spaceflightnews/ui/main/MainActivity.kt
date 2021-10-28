@@ -1,4 +1,4 @@
-package com.example.spaceflightnews.ui
+package com.example.spaceflightnews.ui.main
 
 import android.os.Bundle
 import android.view.View
@@ -10,7 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.spaceflightnews.MainViewModel
+import com.example.spaceflightnews.ui.viewmodel.MainViewModel
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.ActivityMainBinding
 import kotlinx.coroutines.delay

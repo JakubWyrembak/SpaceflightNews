@@ -1,11 +1,11 @@
-package com.example.spaceflightnews.ui
+package com.example.spaceflightnews.ui.detail
 
 import android.os.Bundle
 import android.view.*
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.example.spaceflightnews.MainViewModel
+import com.example.spaceflightnews.ui.viewmodel.MainViewModel
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.databinding.FragmentArticleWebsiteBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
