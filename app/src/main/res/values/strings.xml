@@ -12,4 +12,5 @@
     <string name="history_key">HISTORY_KEY</string>
     <string name="main_key">MAIN_KEY</string>
     <string name="updated">Updated: %s</string>
+    <string name="list_is_empty">List is empty</string>
 </resources>

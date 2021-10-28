@@ -3,6 +3,7 @@ package com.example.spaceflightnews.model
 import android.os.Parcelable
 import com.example.spaceflightnews.UserData
 import com.example.spaceflightnews.utils.DATE_END_INDEX
+import com.example.spaceflightnews.utils.reformatDate
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
 
@@ -25,13 +26,9 @@ data class Article(
     @Json(name = "publishedAt")
     val published: String,
 ) : Parcelable {
-    fun getPublishedTime() = reformatDate(published)
+    fun getPublishedTime() = published.reformatDate()
 
-    fun getUpdatedTime() = reformatDate(updated)
-
-    private fun reformatDate(date: String) =
-        if (date.length >= DATE_END_INDEX) date.substring(0, DATE_END_INDEX)
-        else date
+    fun getUpdatedTime() = updated.reformatDate()
 
     fun isFavorite() = this.id in UserData.favorites
 }

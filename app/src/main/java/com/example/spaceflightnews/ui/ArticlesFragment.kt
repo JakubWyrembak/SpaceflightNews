@@ -15,6 +15,9 @@ import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
+import com.example.spaceflightnews.utils.makeGone
+import com.example.spaceflightnews.utils.makeVisible
+import com.example.spaceflightnews.utils.showToast
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -36,10 +39,7 @@ class ArticlesFragment : Fragment() {
 
         setupRecycler()
         setupOtherViews()
-
         setupCurrentMode()
-
-        Log.v(TAG, "OnCreateView")
 
         return binding.root
     }
@@ -69,7 +69,6 @@ class ArticlesFragment : Fragment() {
         binding.articlesRecyclerView.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
-            layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
@@ -89,9 +88,9 @@ class ArticlesFragment : Fragment() {
     }
 
     private fun setupOtherViews() {
-        with(binding) {
-            refreshLayout.setOnRefreshListener {
-                viewModel.loadData()
+        binding.refreshLayout.setOnRefreshListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.onRefresh(getCurrentMode())
             }
         }
     }
@@ -123,17 +122,43 @@ class ArticlesFragment : Fragment() {
     private fun checkCurrentViewState(state: MainViewState) {
         when (state) {
             is MainViewState.Success -> {
-                binding.loadingProgressBar.visibility = View.GONE
-                binding.refreshLayout.isRefreshing = false
-                recyclerAdapter.submitList(state.data)
+                onSuccess(state.data)
             }
 
             is MainViewState.Loading -> {
-                binding.loadingProgressBar.visibility = View.VISIBLE
+                onLoading()
             }
 
             is MainViewState.Error -> {
-                state.message?.let { Log.e(TAG, it) }
+
+                state.message?.let {
+                    onError(it)
+                }
+            }
+        }
+    }
+
+    private fun onError(errorMessage: String) {
+        Log.e(TAG, errorMessage)
+        showToast(errorMessage)
+    }
+
+    private fun onLoading() {
+        if (!binding.refreshLayout.isRefreshing) {
+            binding.loadingProgressBar.makeVisible()
+        }
+    }
+
+    private fun onSuccess(articles: List<Article>) {
+        binding.loadingProgressBar.makeGone()
+        binding.refreshLayout.isRefreshing = false
+        recyclerAdapter.submitList(articles)
+
+        binding.emptyListText.apply {
+            if (articles.isEmpty()) {
+                makeVisible()
+            } else {
+                makeGone()
             }
         }
     }

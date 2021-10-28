@@ -7,6 +7,21 @@
     android:background="@android:color/transparent"
     tools:context=".ui.ArticlesFragment">
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/empty_list_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/list_is_empty"
+        android:textColor="@color/secondaryDarkColor"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
