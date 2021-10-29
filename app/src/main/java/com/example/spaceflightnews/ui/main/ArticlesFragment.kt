@@ -8,15 +8,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spaceflightnews.states.ArticlesModes.*
-import com.example.spaceflightnews.states.ArticlesModes
-import com.example.spaceflightnews.ui.viewmodel.MainViewModel
-import com.example.spaceflightnews.states.MainViewState
-import com.example.spaceflightnews.states.MainViewState.*
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
+import com.example.spaceflightnews.states.ArticlesModes
+import com.example.spaceflightnews.states.ArticlesModes.*
+import com.example.spaceflightnews.states.MainViewState
+import com.example.spaceflightnews.states.MainViewState.*
+import com.example.spaceflightnews.ui.viewmodel.MainViewModel
 import com.example.spaceflightnews.utils.makeGone
 import com.example.spaceflightnews.utils.makeVisible
 import com.example.spaceflightnews.utils.showToast
@@ -112,30 +112,28 @@ class ArticlesFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.filter_button -> {
                 // TODO
-                return true
+                true
             }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun checkCurrentViewState(state: MainViewState) {
         when (state) {
             is Success -> onSuccess(state.data)
             is Loading -> onLoading()
-            is Error -> {
-                state.message?.let {
-                    onError(it)
-                }
-            }
+            is Error -> onError(state.message)
         }
     }
 
-    private fun onError(errorMessage: String) {
-        Log.e(TAG, errorMessage)
-        showToast(errorMessage)
+    private fun onError(errorMessage: String?) {
+        errorMessage?.let {
+            Log.e(TAG, errorMessage)
+            showToast(errorMessage)
+        }
     }
 
     private fun onLoading() {
