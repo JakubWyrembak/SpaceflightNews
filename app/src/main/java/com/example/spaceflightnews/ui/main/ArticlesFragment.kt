@@ -3,6 +3,7 @@ package com.example.spaceflightnews.ui.main
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -12,8 +13,8 @@ import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
 import com.example.spaceflightnews.model.Article
-import com.example.spaceflightnews.states.ArticlesModes
-import com.example.spaceflightnews.states.ArticlesModes.*
+import com.example.spaceflightnews.states.ArticlesMode
+import com.example.spaceflightnews.states.ArticlesMode.*
 import com.example.spaceflightnews.states.MainViewState
 import com.example.spaceflightnews.states.MainViewState.*
 import com.example.spaceflightnews.ui.viewmodel.MainViewModel
@@ -97,7 +98,7 @@ class ArticlesFragment : Fragment() {
         }
     }
 
-    private fun getCurrentMode(): ArticlesModes {
+    private fun getCurrentMode(): ArticlesMode {
         val args: ArticlesFragmentArgs by navArgs()
         return when (args.articlesKey) {
             R.string.favorites_key -> FAVORITES
@@ -108,6 +109,41 @@ class ArticlesFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.articles_menu, menu)
+        val searchView: SearchView = menu.findItem(R.id.search_button).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchView.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                if (!query.isNullOrEmpty()) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        recyclerAdapter.submitList(
+                            viewModel.getSearchedArticles(query, getCurrentMode())
+                        )
+                    }
+                }
+                return true
+            }
+
+        })
+        menu.findItem(R.id.search_button).setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                Log.v(TAG, "onMenuItemActionExpand")
+
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                Log.v(TAG, "onMenuItemActionCollapse")
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.onRefresh(getCurrentMode())
+                }
+                return true
+            }
+
+        })
         super.onCreateOptionsMenu(menu, inflater)
     }
 

@@ -5,11 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.spaceflightnews.states.ArticlesModes
-import com.example.spaceflightnews.states.MainViewState
-import com.example.spaceflightnews.states.UserData
 import com.example.spaceflightnews.data.Repository
 import com.example.spaceflightnews.model.Article
+import com.example.spaceflightnews.states.ArticlesMode
+import com.example.spaceflightnews.states.MainViewState
+import com.example.spaceflightnews.states.UserData
+import com.example.spaceflightnews.utils.ARTICLES_AT_START
 import com.example.spaceflightnews.utils.FAVORITES_ID
 import com.example.spaceflightnews.utils.HISTORY_ID
 import com.example.spaceflightnews.utils.Preferences
@@ -44,15 +45,10 @@ class MainViewModel(
         }
     }
 
-    suspend fun loadUserDataArticles() {
-        loadHistoryArticles()
-        loadFavoriteArticles()
-    }
-
     private suspend fun fetchArticles() {
         _articles.postValue(MainViewState.Loading)
         try {
-            val data = repository.getArticles(25)
+            val data = repository.getArticles(ARTICLES_AT_START)
             _articles.postValue(MainViewState.Success(data))
         } catch (e: Exception) {
             e.message?.let {
@@ -60,19 +56,55 @@ class MainViewModel(
                 _articles.postValue(MainViewState.Error(e.message))
             }
         }
-
     }
+
+    suspend fun loadUserDataArticles() {
+        loadHistoryArticles()
+        loadFavoriteArticles()
+    }
+
 
     private suspend fun loadHistoryArticles() {
-        _historyArticles.postValue(MainViewState.Loading)
-        val articles = mutableListOf<Article>()
+        if (UserData.history.isEmpty()) {
+            _historyArticles.postValue(MainViewState.Success(listOf()))
+        } else {
+            _historyArticles.postValue(MainViewState.Loading)
+            val articles = fetchArticlesByIds(UserData.history
+                .map { it.toString() })
+                .sortedBy {
+                    UserData.history.indexOf(it.id)
+                }
 
-        UserData.history.forEach {
-            loadSingleArticle(it, articles)
+            _historyArticles.postValue(MainViewState.Success(articles))
         }
-
-        _historyArticles.postValue(MainViewState.Success(articles))
     }
+
+    private suspend fun loadFavoriteArticles() {
+        if (UserData.favorites.isEmpty()) {
+            _favoriteArticles.postValue(MainViewState.Success(listOf()))
+        } else {
+            _favoriteArticles.postValue(MainViewState.Loading)
+            val articles = fetchArticlesByIds(UserData.favorites
+                .map { it.toString() })
+                .sortedBy {
+                    UserData.favorites.indexOf(it.id)
+                }
+
+            _favoriteArticles.postValue(MainViewState.Success(articles))
+        }
+    }
+
+    private suspend fun fetchArticlesByIds(ids: List<String>) =
+        try {
+            repository.getArticlesById(ids)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            e.message?.let {
+                Log.e(TAG, it)
+            }
+            listOf()
+        }
 
     private suspend fun loadSingleArticle(id: Int, data: MutableList<Article>) {
         try {
@@ -87,17 +119,9 @@ class MainViewModel(
         }
     }
 
-    // TODO jedna funkcja z tych dwóch
-    // TODO żeby nie było za dużo
-    suspend fun addToHistory(id: Int) {
-        val currData: MutableList<Article>
-        if (historyArticles.value is MainViewState.Success) {
-            currData = (historyArticles.value as MainViewState.Success).data as MutableList<Article>
 
-            _historyArticles.postValue(MainViewState.Success(currData))
-        } else {
-            currData = mutableListOf()
-        }
+    suspend fun addToHistory(id: Int) {
+        val currData = getCurrentData(historyArticles)
 
         if (id in UserData.history) {
             UserData.history.remove(id)
@@ -106,47 +130,67 @@ class MainViewModel(
             }
         }
 
-        UserData.history.add(id)
+        UserData.history.add(0, id)
         loadSingleArticle(id, currData)
         _historyArticles.postValue(MainViewState.Success(currData))
     }
 
+
     suspend fun addOrRemoveFavorite(id: Int) {
-        val currData: MutableList<Article> =
-            if (favoriteArticles.value is MainViewState.Success) {
-                (favoriteArticles.value as MainViewState.Success).data as MutableList<Article>
-            } else {
-                mutableListOf()
-            }
+        val currData = getCurrentData(favoriteArticles)
 
         if (id in UserData.favorites) {
             UserData.favorites.remove(id)
             currData.removeIf {
                 it.id == id
             }
-            _favoriteArticles.postValue(MainViewState.Success(currData))
         } else {
-            UserData.favorites.add(id)
+            UserData.favorites.add(0, id)
             loadSingleArticle(id, currData)
-            _favoriteArticles.postValue(MainViewState.Success(currData))
-        }
-    }
-
-    private suspend fun loadFavoriteArticles() {
-        _favoriteArticles.postValue(MainViewState.Loading)
-        val articles = mutableListOf<Article>()
-        UserData.favorites.forEach {
-            loadSingleArticle(it, articles)
         }
 
-        _favoriteArticles.postValue(MainViewState.Success(articles))
+        _favoriteArticles.postValue(MainViewState.Success(currData))
     }
 
-    suspend fun onRefresh(currentMode: ArticlesModes) {
+    private fun getCurrentData(articles: LiveData<MainViewState>) =
+        if (articles.value is MainViewState.Success) {
+            (articles.value as MainViewState.Success).data.toMutableList()
+        } else {
+            mutableListOf()
+        }
+
+    suspend fun onRefresh(currentMode: ArticlesMode) {
         when (currentMode) {
-            ArticlesModes.MAIN -> fetchArticles()
-            ArticlesModes.HISTORY -> loadHistoryArticles()
-            ArticlesModes.FAVORITES -> loadFavoriteArticles()
+            ArticlesMode.MAIN -> fetchArticles()
+            ArticlesMode.HISTORY -> loadHistoryArticles()
+            ArticlesMode.FAVORITES -> loadFavoriteArticles()
+        }
+    }
+
+    suspend fun getSearchedArticles(query: String, currentMode: ArticlesMode): List<Article> {
+        return try {
+            when (currentMode) {
+                ArticlesMode.MAIN -> repository.getSearchedArticles(query)
+                ArticlesMode.FAVORITES -> getUserDataQueryArticles(favoriteArticles, query)
+                ArticlesMode.HISTORY -> getUserDataQueryArticles(historyArticles, query)
+            }
+        } catch (e: Exception) {
+            e.message?.let {
+                Log.e(TAG, it)
+            }
+            listOf()
+        }
+    }
+
+    private fun getUserDataQueryArticles(
+        articles: LiveData<MainViewState>, query: String
+    ): List<Article> {
+        return if (articles.value is MainViewState.Success) {
+            (articles.value as MainViewState.Success).data.filter {
+                it.title.contains(query, true)
+            }
+        } else {
+            listOf()
         }
     }
 
@@ -165,7 +209,6 @@ class MainViewModel(
         preferences.getArticles(FAVORITES_ID).map {
             UserData.favorites.add(it)
         }
-
     }
 
     companion object {

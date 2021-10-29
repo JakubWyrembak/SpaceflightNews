@@ -1,6 +1,6 @@
 package com.example.spaceflightnews.states
 
-enum class ArticlesModes {
+enum class ArticlesMode {
     MAIN,
     HISTORY,
     FAVORITES

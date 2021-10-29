@@ -6,4 +6,8 @@ class Repository(private val service: ArticlesService) {
 
     suspend fun getArticle(articleId: Int) = service.fetchArticle(articleId)
 
+    suspend fun getArticlesById(ids: List<String>) = service.fetchArticlesById(ids)
+
+    suspend fun getSearchedArticles(searchValue: String) =
+        service.fetchSearchedArticles(searchValue)
 }
