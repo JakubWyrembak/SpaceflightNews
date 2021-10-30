@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_articles"
-        android:name="com.example.spaceflightnews.ui.main.ArticlesFragment"
+        android:name="com.solvro.spaceflightnews.ui.main.ArticlesFragment"
         android:label="@string/articles"
         tools:layout="@layout/fragment_articles">
         <argument
@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.example.spaceflightnews.ui.main.ArticlesFragment"
+        android:name="com.solvro.spaceflightnews.ui.main.ArticlesFragment"
         android:label="@string/history"
         tools:layout="@layout/fragment_articles">
         <argument
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.example.spaceflightnews.ui.main.ArticlesFragment"
+        android:name="com.solvro.spaceflightnews.ui.main.ArticlesFragment"
         android:label="@string/favorites"
         tools:layout="@layout/fragment_articles">
         <argument
@@ -46,20 +46,20 @@
 
     <fragment
         android:id="@+id/articleDetailFragment"
-        android:name="com.example.spaceflightnews.ui.detail.ArticleDetailFragment"
+        android:name="com.solvro.spaceflightnews.ui.detail.ArticleDetailFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_article_detail">
 
         <argument
             android:name="articleDetail"
-            app:argType="com.example.spaceflightnews.model.Article" />
+            app:argType="com.solvro.spaceflightnews.model.Article" />
         <action
             android:id="@+id/action_articleDetailFragment_to_articleWebsiteFragment"
             app:destination="@id/articleWebsiteFragment" />
     </fragment>
     <fragment
         android:id="@+id/articleWebsiteFragment"
-        android:name="com.example.spaceflightnews.ui.detail.ArticleWebsiteFragment"
+        android:name="com.solvro.spaceflightnews.ui.detail.ArticleWebsiteFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_article_website">
 

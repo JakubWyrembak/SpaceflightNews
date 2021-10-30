@@ -9,7 +9,7 @@ android {
     compileSdk 30
 
     defaultConfig {
-        applicationId "com.example.spaceflightnews"
+        applicationId "com.solvro.spaceflightnews"
         minSdk 26
         targetSdk 30
         versionCode 1
@@ -36,7 +36,6 @@ android {
     }
 }
 
-// TODO
 dependencies {
     def moshi_version = "1.12.0"
     def retrofit_version = "2.9.0"
