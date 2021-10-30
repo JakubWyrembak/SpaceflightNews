@@ -3,8 +3,6 @@ package com.solvro.spaceflightnews.ui.start
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.Animation
@@ -15,6 +13,7 @@ import com.solvro.spaceflightnews.R
 import com.solvro.spaceflightnews.databinding.ActivitySplashBinding
 import com.solvro.spaceflightnews.ui.main.MainActivity
 import com.solvro.spaceflightnews.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -33,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
         hideBar()
         animate()
 
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             viewModel.loadPreferences()
         }
     }
@@ -58,12 +57,9 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun getAnimationListener() = object : Animation.AnimationListener {
-        // TODO coroutines?
         override fun onAnimationEnd(animation: Animation?) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                finish()
-            }, 0)
+            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            finish()
         }
 
         override fun onAnimationStart(animation: Animation?) {}
