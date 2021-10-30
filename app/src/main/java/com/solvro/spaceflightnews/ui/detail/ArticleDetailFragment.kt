@@ -63,7 +63,6 @@ class ArticleDetailFragment : Fragment() {
             R.id.favorite_button -> {
                 requireActivity().findViewById<View>(item.itemId).changeFavoriteButtonIcon(article)
                 lifecycleScope.launch {
-                    Log.v(TAG, "Menu item dodaje/usuwam")
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.addOrRemoveFavorite(article.id)
                     }

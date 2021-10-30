@@ -21,13 +21,13 @@ data class Article(
     @Json(name = "summary")
     val summary: String,
     @Json(name = "updatedAt")
-    val updated: String,
+    private val updatedTime: String,
     @Json(name = "publishedAt")
-    val published: String,
+    private val publishedTime: String,
 ) : Parcelable {
-    fun getPublishedTime() = published.reformatDate()
+    fun getPublishedTime() = publishedTime.reformatDate()
 
-    fun getUpdatedTime() = updated.reformatDate()
+    fun getUpdatedTime() = updatedTime.reformatDate()
 
     fun isFavorite() = this.id in UserData.favorites
 }

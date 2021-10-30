@@ -30,17 +30,17 @@ class ArticleWebsiteFragment : Fragment() {
         return binding.root
     }
 
+    private fun loadArgs() {
+        val args: ArticleWebsiteFragmentArgs by navArgs()
+        currentUrl = args.websiteUrl
+    }
+
     private fun setupWebView() {
         binding.webView.apply {
             loadUrl(currentUrl)
             settings.javaScriptEnabled = true
             webViewClient = WebViewClient()           // that fixes opening browser on NASA websites
         }
-    }
-
-    private fun loadArgs() {
-        val args: ArticleWebsiteFragmentArgs by navArgs()
-        currentUrl = args.websiteUrl
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

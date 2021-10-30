@@ -1,36 +1,32 @@
 package com.solvro.spaceflightnews.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.daimajia.androidanimations.library.Techniques
-import com.daimajia.androidanimations.library.YoYo
 import com.solvro.spaceflightnews.R
 import com.solvro.spaceflightnews.databinding.SingleArticleBinding
 import com.solvro.spaceflightnews.model.Article
-import com.solvro.spaceflightnews.states.UserData
 import com.solvro.spaceflightnews.utils.changeFavoriteButtonIcon
+import com.solvro.spaceflightnews.utils.makeGone
+import com.solvro.spaceflightnews.utils.makeVisible
+import com.solvro.spaceflightnews.utils.pulse
 
 
 class ArticlesAdapter(
     private val onArticleClick: (Article) -> Unit,
     private val onFavoriteClick: (Article) -> Unit
-) :
-    ListAdapter<Article, ArticlesAdapter.ViewHolder>(
-        DiffCallback
-    ) {
+) : ListAdapter<Article, ArticlesAdapter.ViewHolder>(
+    ArticleDiffCallback
+) {
 
-    // TODO kolejność
     inner class ViewHolder(
         private val binding: SingleArticleBinding,
         private val showDetailedArticle: (Article) -> Unit,
         private val onFavoriteClick: (Article) -> Unit
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         private lateinit var currentArticle: Article
 
@@ -40,34 +36,25 @@ class ArticlesAdapter(
             setupSummaryVisibility()
             loadImage()
             checkIfIsFavorite()
-            setupListener()
-        }
-
-        private fun checkIfIsFavorite() {
-            if (currentArticle.id in UserData.favorites) {
-                binding.favoriteButton.setImageResource(R.drawable.ic_filled_heart)
-            } else {
-                binding.favoriteButton.setImageResource(R.drawable.ic_favourite)
-            }
+            setupListeners()
         }
 
         private fun setupTextViews() {
-            currentArticle.let { article ->
-                with(binding) {
-                    title.text = article.title
-                    dateText.text = article.getPublishedTime()
-                    summary.text = article.summary
-                }
+            with(binding) {
+                title.text = currentArticle.title
+                dateText.text = currentArticle.getPublishedTime()
+                summary.text = currentArticle.summary
             }
         }
 
         private fun setupSummaryVisibility() {
-            binding.summary.visibility =
+            binding.summary.apply {
                 if (currentArticle.summary.length >= MAX_SUMMARY_LENGTH) {
-                    View.GONE
+                    makeGone()
                 } else {
-                    View.VISIBLE
+                    makeVisible()
                 }
+            }
         }
 
         private fun loadImage() {
@@ -78,14 +65,25 @@ class ArticlesAdapter(
                 .into(binding.image)
         }
 
-        private fun setupListener() {
+        private fun checkIfIsFavorite() {
+            binding.favoriteButton.setImageResource(
+                if (currentArticle.isFavorite()) {
+                    R.drawable.ic_filled_heart
+                } else {
+                    R.drawable.ic_favourite
+                }
+            )
+        }
+
+        private fun setupListeners() {
             with(binding) {
-                articleCard.setOnClickListener { showDetailedArticle(currentArticle) }
+                articleCard.setOnClickListener {
+                    showDetailedArticle(currentArticle)
+                }
+
                 favoriteButton.setOnClickListener {
                     it.changeFavoriteButtonIcon(currentArticle)
                     onFavoriteClick(currentArticle)
-                    YoYo.with(Techniques.Pulse)
-                        .playOn(it)
                 }
             }
         }
@@ -107,16 +105,10 @@ class ArticlesAdapter(
     }
 }
 
+object ArticleDiffCallback : DiffUtil.ItemCallback<Article>() {
+    override fun areItemsTheSame(oldArticle: Article, newArticle: Article) =
+        oldArticle.id == newArticle.id
 
-// TODO
-// ogarnąć jakie atrybuty dawać w areContentsTheSame
-// Nazwy dać lepsze
-object DiffCallback : DiffUtil.ItemCallback<Article>() {
-    override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
-        return oldItem.id == newItem.id && oldItem.id == newItem.id
-    }
+    override fun areContentsTheSame(oldArticle: Article, newArticle: Article) =
+        oldArticle == newArticle
 }

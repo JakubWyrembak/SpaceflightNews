@@ -8,12 +8,13 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.fragment.app.Fragment
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.solvro.spaceflightnews.R
 import com.solvro.spaceflightnews.model.Article
 
 @SuppressLint("RestrictedApi")
 fun View.changeFavoriteButtonIcon(article: Article) {
-
     val drawableIcon =
         AppCompatResources.getDrawable(
             context,
@@ -33,13 +34,20 @@ fun View.changeFavoriteButtonIcon(article: Article) {
             setIcon(drawableIcon)
         }
     }
+
+    this.pulse()
+}
+
+fun View.pulse(){
+    YoYo.with(Techniques.Pulse)
+        .playOn(this)
 }
 
 fun String.getArticlesIds(): List<Int> =
     removeSurrounding("[", "]")
         .split(", ")
         .mapNotNull {
-            it.toIntOrNull()        // TODO toInt?
+            it.toIntOrNull()
         }
 
 fun View.makeGone() {
@@ -50,12 +58,12 @@ fun View.makeVisible() {
     this.visibility = View.VISIBLE
 }
 
+
 fun String.reformatDate() =
     (if (this.length >= DATE_END_INDEX)
         this.substring(0, DATE_END_INDEX)
     else
         this).replace("-", "/")
-
 
 fun Activity.showToast(message: String) {
     Toast.makeText(
