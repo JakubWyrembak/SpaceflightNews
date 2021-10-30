@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface ArticlesService {
     @GET("articles")
-    suspend fun fetchArticles(@Query("_limit")limit: Int): List<Article>
+    suspend fun fetchArticles(@Query("_start")start: Int, @Query("_limit")limit: Int): List<Article>
 
     @GET("articles/{id}")
     suspend fun fetchArticle(@Path("id")articleId: Int): Article

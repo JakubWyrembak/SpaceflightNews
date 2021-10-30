@@ -10,10 +10,7 @@ import com.example.spaceflightnews.model.Article
 import com.example.spaceflightnews.states.ArticlesMode
 import com.example.spaceflightnews.states.MainViewState
 import com.example.spaceflightnews.states.UserData
-import com.example.spaceflightnews.utils.ARTICLES_AT_START
-import com.example.spaceflightnews.utils.FAVORITES_ID
-import com.example.spaceflightnews.utils.HISTORY_ID
-import com.example.spaceflightnews.utils.Preferences
+import com.example.spaceflightnews.utils.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,17 +36,25 @@ class MainViewModel(
     val favoriteArticles: LiveData<MainViewState>
         get() = _favoriteArticles
 
+    private var timesLoaded = 0
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             fetchArticles()
+            loadUserDataArticles()
         }
     }
 
-    private suspend fun fetchArticles() {
+    suspend fun fetchArticles() {
+        val data: MutableList<Article> = if(articles.value is MainViewState.Success) {
+            (articles.value as MainViewState.Success).data.toMutableList()
+        }  else{
+            mutableListOf()
+        }
         _articles.postValue(MainViewState.Loading)
         try {
-            val data = repository.getArticles(ARTICLES_AT_START)
-            _articles.postValue(MainViewState.Success(data))
+            data += repository.getArticles(timesLoaded* ARTICLES_AT_START, ARTICLES_AT_START*(++timesLoaded))
+            _articles.postValue(MainViewState.Success(data.distinct()))
         } catch (e: Exception) {
             e.message?.let {
                 Log.e(TAG, it)
@@ -58,7 +63,7 @@ class MainViewModel(
         }
     }
 
-    suspend fun loadUserDataArticles() {
+    private suspend fun loadUserDataArticles() {
         loadHistoryArticles()
         loadFavoriteArticles()
     }
@@ -130,6 +135,10 @@ class MainViewModel(
             }
         }
 
+        if(UserData.history.size > HISTORY_MAX_SIZE){
+            UserData.history.removeLast()
+        }
+
         UserData.history.add(0, id)
         loadSingleArticle(id, currData)
         _historyArticles.postValue(MainViewState.Success(currData))
@@ -161,7 +170,10 @@ class MainViewModel(
 
     suspend fun onRefresh(currentMode: ArticlesMode) {
         when (currentMode) {
-            ArticlesMode.MAIN -> fetchArticles()
+            ArticlesMode.MAIN -> {
+                timesLoaded = 0
+                fetchArticles()
+            }
             ArticlesMode.HISTORY -> loadHistoryArticles()
             ArticlesMode.FAVORITES -> loadFavoriteArticles()
         }
@@ -210,6 +222,9 @@ class MainViewModel(
             UserData.favorites.add(it)
         }
     }
+
+    fun isLastItemVisible(index: Int) =
+        index+1 == timesLoaded* ARTICLES_AT_START
 
     companion object {
         private const val TAG = "MainViewModel"

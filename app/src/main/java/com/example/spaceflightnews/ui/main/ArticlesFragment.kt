@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.spaceflightnews.R
 import com.example.spaceflightnews.adapters.ArticlesAdapter
 import com.example.spaceflightnews.databinding.FragmentArticlesBinding
@@ -33,6 +34,9 @@ class ArticlesFragment : Fragment() {
     private lateinit var recyclerAdapter: ArticlesAdapter
     private val viewModel: MainViewModel by sharedViewModel()
 
+    private var searchView: SearchView? = null
+    private lateinit var searchViewMenuItem: MenuItem
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,7 +45,7 @@ class ArticlesFragment : Fragment() {
         setHasOptionsMenu(true)
 
         setupRecycler()
-        setupOtherViews()
+        setupRefreshLayout()
         setupCurrentMode()
 
         return binding.root
@@ -72,6 +76,7 @@ class ArticlesFragment : Fragment() {
         binding.articlesRecyclerView.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(requireContext())
+            addOnScrollListener(getOnScrollListener())
         }
     }
 
@@ -90,8 +95,10 @@ class ArticlesFragment : Fragment() {
         navigateToDetail(article)
     }
 
-    private fun setupOtherViews() {
+    private fun setupRefreshLayout() {
         binding.refreshLayout.setOnRefreshListener {
+            searchViewMenuItem.collapseActionView()
+
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.onRefresh(getCurrentMode())
             }
@@ -109,41 +116,13 @@ class ArticlesFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.articles_menu, menu)
-        val searchView: SearchView = menu.findItem(R.id.search_button).actionView as SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                searchView.clearFocus()
-                return true
-            }
 
-            override fun onQueryTextChange(query: String?): Boolean {
-                if (!query.isNullOrEmpty()) {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        recyclerAdapter.submitList(
-                            viewModel.getSearchedArticles(query, getCurrentMode())
-                        )
-                    }
-                }
-                return true
-            }
+        searchViewMenuItem = menu.findItem(R.id.search_button)
+        searchView = searchViewMenuItem.actionView as SearchView
 
-        })
-        menu.findItem(R.id.search_button).setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                Log.v(TAG, "onMenuItemActionExpand")
+        searchView!!.setOnQueryTextListener(getOnQueryTextListener())
+        menu.findItem(R.id.search_button).setOnActionExpandListener(getOnActionExpandListener())
 
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                Log.v(TAG, "onMenuItemActionCollapse")
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.onRefresh(getCurrentMode())
-                }
-                return true
-            }
-
-        })
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -210,6 +189,53 @@ class ArticlesFragment : Fragment() {
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
+    }
+
+    private fun getOnScrollListener() = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val last =
+                (binding.articlesRecyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            if (shouldLoadMoreArticles(last)) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.fetchArticles()
+                }
+            }
+        }
+    }
+
+    private fun shouldLoadMoreArticles(lastVisibleIndex: Int) =
+        recyclerAdapter.itemCount - 1 == lastVisibleIndex
+                && searchView?.query?.isEmpty() == true
+                && viewModel.articles.value !is Loading
+                && getCurrentMode() == MAIN
+
+    private fun getOnQueryTextListener() = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            searchView!!.clearFocus()
+            return true
+        }
+
+        override fun onQueryTextChange(query: String?): Boolean {
+            if (!query.isNullOrEmpty()) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    recyclerAdapter.submitList(
+                        viewModel.getSearchedArticles(query, getCurrentMode())
+                    )
+                }
+            }
+            return true
+        }
+    }
+
+    private fun getOnActionExpandListener() = object : MenuItem.OnActionExpandListener {
+        override fun onMenuItemActionExpand(item: MenuItem?) = true
+
+        override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.onRefresh(getCurrentMode())
+            }
+            return true
+        }
     }
 
     companion object {
