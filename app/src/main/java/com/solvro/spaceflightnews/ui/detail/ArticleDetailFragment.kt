@@ -1,7 +1,6 @@
 package com.solvro.spaceflightnews.ui.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +12,7 @@ import com.solvro.spaceflightnews.databinding.FragmentArticleDetailBinding
 import com.solvro.spaceflightnews.model.Article
 import com.solvro.spaceflightnews.ui.viewmodel.MainViewModel
 import com.solvro.spaceflightnews.utils.changeFavoriteButtonIcon
+import com.solvro.spaceflightnews.utils.launchIO
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -32,17 +32,20 @@ class ArticleDetailFragment : Fragment() {
         _binding = FragmentArticleDetailBinding.inflate(inflater)
 
         setHasOptionsMenu(true)
+        loadArgs()
 
-        val args: ArticleDetailFragmentArgs by navArgs()
-        article = args.articleDetail
-
-        viewLifecycleOwner.lifecycleScope.launch {
+        launchIO {
             viewModel.addToHistory(article.id)
         }
 
         setupViews()
 
         return binding.root
+    }
+
+    private fun loadArgs() {
+        val args: ArticleDetailFragmentArgs by navArgs()
+        article = args.articleDetail
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

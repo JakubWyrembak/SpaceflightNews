@@ -1,4 +1,4 @@
-package com.solvro.spaceflightnews
+package com.solvro.spaceflightnews.ui.di
 
 import com.solvro.spaceflightnews.data.ApiClient
 import com.solvro.spaceflightnews.data.Repository

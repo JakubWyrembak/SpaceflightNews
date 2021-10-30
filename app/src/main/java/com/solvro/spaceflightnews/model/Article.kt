@@ -25,6 +25,7 @@ data class Article(
     @Json(name = "publishedAt")
     private val publishedTime: String,
 ) : Parcelable {
+
     fun getPublishedTime() = publishedTime.reformatDate()
 
     fun getUpdatedTime() = updatedTime.reformatDate()

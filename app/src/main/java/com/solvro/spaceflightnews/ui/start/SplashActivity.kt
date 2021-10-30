@@ -28,9 +28,13 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = getViewModel()
+        setupViewModel()
         hideBar()
         animate()
+    }
+
+    private fun setupViewModel() {
+        viewModel = getViewModel()
 
         lifecycleScope.launch(Dispatchers.IO) {
             viewModel.loadPreferences()

@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,10 +18,7 @@ import com.solvro.spaceflightnews.states.ArticlesMode.*
 import com.solvro.spaceflightnews.states.MainViewState
 import com.solvro.spaceflightnews.states.MainViewState.*
 import com.solvro.spaceflightnews.ui.viewmodel.MainViewModel
-import com.solvro.spaceflightnews.utils.makeGone
-import com.solvro.spaceflightnews.utils.makeVisible
-import com.solvro.spaceflightnews.utils.showToast
-import kotlinx.coroutines.launch
+import com.solvro.spaceflightnews.utils.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArticlesFragment : Fragment() {
@@ -42,29 +38,16 @@ class ArticlesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentArticlesBinding.inflate(inflater)
-        setHasOptionsMenu(true)
 
-        setupRecycler()
-        setupRefreshLayout()
+        setHasOptionsMenu(true)
+        setupRecyclerView()
         setupCurrentMode()
+        setupRefreshLayout()
 
         return binding.root
     }
 
-    private fun setupCurrentMode() {
-        val currentData =
-            when (getCurrentMode()) {
-                MAIN -> viewModel.articles
-                HISTORY -> viewModel.historyArticles
-                FAVORITES -> viewModel.favoriteArticles
-            }
-
-        currentData.observe(viewLifecycleOwner) {
-            checkCurrentViewState(it)
-        }
-    }
-
-    private fun setupRecycler() {
+    private fun setupRecyclerView() {
         recyclerAdapter = ArticlesAdapter(
             onFavoriteClick = {
                 onFavoriteClick(it.id)
@@ -80,29 +63,43 @@ class ArticlesFragment : Fragment() {
         }
     }
 
-    private fun onFavoriteClick(id: Int) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.addOrRemoveFavorite(id)
-        }
-    }
-
-    private fun onArticleClick(article: Article) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            if (requireActivity() is MainActivity) {
-                (activity as MainActivity).hideBottomNavigation()
+    private fun setupCurrentMode() {
+        val currentData = with(viewModel) {
+            when (getCurrentMode()) {
+                MAIN -> articles
+                HISTORY -> historyArticles
+                FAVORITES -> favoriteArticles
             }
         }
-        navigateToDetail(article)
+
+        observe(currentData) {
+            checkCurrentViewState(it)
+        }
     }
 
     private fun setupRefreshLayout() {
         binding.refreshLayout.setOnRefreshListener {
             searchViewMenuItem.collapseActionView()
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launchIO {
                 viewModel.onRefresh(getCurrentMode())
             }
         }
+    }
+
+    private fun onFavoriteClick(id: Int) {
+        launchIO {
+            viewModel.addOrRemoveFavorite(id)
+        }
+    }
+
+    private fun onArticleClick(article: Article) {
+        launchIO {
+            if (requireActivity() is MainActivity) {
+                (activity as MainActivity).hideBottomNavigation()
+            }
+        }
+        navigateToDetail(article)
     }
 
     private fun getCurrentMode(): ArticlesMode {
@@ -124,16 +121,6 @@ class ArticlesFragment : Fragment() {
         menu.findItem(R.id.search_button).setOnActionExpandListener(getOnActionExpandListener())
 
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.filter_button -> {
-                // TODO
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun checkCurrentViewState(state: MainViewState) {
@@ -196,7 +183,7 @@ class ArticlesFragment : Fragment() {
             val last =
                 (binding.articlesRecyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
             if (shouldLoadMoreArticles(last)) {
-                viewLifecycleOwner.lifecycleScope.launch {
+                launchIO {
                     viewModel.fetchArticles()
                 }
             }
@@ -217,7 +204,7 @@ class ArticlesFragment : Fragment() {
 
         override fun onQueryTextChange(query: String?): Boolean {
             if (!query.isNullOrEmpty()) {
-                viewLifecycleOwner.lifecycleScope.launch {
+                launchIO {
                     recyclerAdapter.submitList(
                         viewModel.getSearchedArticles(query, getCurrentMode())
                     )
@@ -231,7 +218,7 @@ class ArticlesFragment : Fragment() {
         override fun onMenuItemActionExpand(item: MenuItem?) = true
 
         override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-            viewLifecycleOwner.lifecycleScope.launch {
+            launchIO {
                 viewModel.onRefresh(getCurrentMode())
             }
             return true

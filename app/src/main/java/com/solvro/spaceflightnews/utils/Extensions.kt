@@ -8,10 +8,15 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.solvro.spaceflightnews.R
 import com.solvro.spaceflightnews.model.Article
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("RestrictedApi")
 fun View.changeFavoriteButtonIcon(article: Article) {
@@ -38,7 +43,7 @@ fun View.changeFavoriteButtonIcon(article: Article) {
     this.pulse()
 }
 
-fun View.pulse(){
+fun View.pulse() {
     YoYo.with(Techniques.Pulse)
         .playOn(this)
 }
@@ -58,6 +63,11 @@ fun View.makeVisible() {
     this.visibility = View.VISIBLE
 }
 
+fun <T> LifecycleOwner.observe(liveData: LiveData<T>, function: (T) -> Unit) {
+    liveData.observe(this) {
+        function(it)
+    }
+}
 
 fun String.reformatDate() =
     (if (this.length >= DATE_END_INDEX)
@@ -74,6 +84,12 @@ fun Activity.showToast(message: String) {
 }
 
 fun Fragment.showToast(message: String) = this.requireActivity().showToast(message)
+
+fun Fragment.launchIO(function: suspend ()-> Unit){
+    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+        function()
+    }
+}
 
 
 
