@@ -12,7 +12,6 @@ import com.solvro.spaceflightnews.model.Article
 import com.solvro.spaceflightnews.utils.changeFavoriteButtonIcon
 import com.solvro.spaceflightnews.utils.makeGone
 import com.solvro.spaceflightnews.utils.makeVisible
-import com.solvro.spaceflightnews.utils.pulse
 
 
 class ArticlesAdapter(
