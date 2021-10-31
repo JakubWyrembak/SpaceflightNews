@@ -45,7 +45,7 @@ Application for Android. Fetching data from [API](https://spaceflightnewsapi.net
 ### Splash screen
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_start.gif)
 
-### Detail view
+### Detail screen
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_detail.gif)
 
 ### History and favorites
