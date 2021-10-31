@@ -13,6 +13,7 @@ Additional features:
 - [X] History page
 - [X] Pagination
 - [X] Loading data on splash screen
+- [X] Preferences
 - [ ] Filtering
 - [ ] Settings page
 
@@ -29,4 +30,7 @@ I used:
   - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
   - [Navigation](https://developer.android.com/guide/navigation)
 
+# Splash screen
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_app.gif)
+
+# 
