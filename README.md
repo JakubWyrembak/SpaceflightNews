@@ -31,7 +31,7 @@ I used:
   - [Navigation](https://developer.android.com/guide/navigation)
 
 ### Splash screen
-![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_app.gif)
+![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_start.gif)
 
 ### Detail view
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_detail.gif)
