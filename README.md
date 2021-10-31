@@ -5,14 +5,15 @@
 
 Application for Android. Fetching data from [API](https://spaceflightnewsapi.net/) and then showing the articles about spaceflights.
 
-Features (obligatory):
+## Features
+### Obligatory
 - [X] Displaying list of articles
 - [X] Add to favorites
 - [X] Favorites page
 - [X] Refreshing
 - [X] Displaying detailed article
 
-Additional features:
+### Additional
 - [X] WebsiteView of article
 - [X] Search articles by title
 - [X] History page
@@ -22,7 +23,7 @@ Additional features:
 - [ ] Filtering
 - [ ] Settings page
 
-I used:
+## Frameworks
 - UI
   - [Glide](https://github.com/bumptech/glide)
   - [Android View Animations](https://github.com/daimajia/AndroidViewAnimations)
@@ -35,6 +36,8 @@ I used:
 - And others
   - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
   - [Navigation](https://developer.android.com/guide/navigation)
+
+# How Spaceflight News works?
 
 ### Splash screen
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_start.gif)
