@@ -1,7 +1,7 @@
 package com.solvro.spaceflightnews.model
 
 import android.os.Parcelable
-import com.solvro.spaceflightnews.states.UserData
+import com.solvro.spaceflightnews.utils.UserData
 import com.solvro.spaceflightnews.utils.reformatDate
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
