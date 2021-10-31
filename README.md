@@ -28,3 +28,5 @@ I used:
 - And others
   - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
   - [Navigation](https://developer.android.com/guide/navigation)
+
+![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_app.gif)
