@@ -203,7 +203,7 @@ class ArticlesFragment : Fragment() {
         }
 
         override fun onQueryTextChange(query: String?): Boolean {
-            if (!query.isNullOrEmpty()) {
+            if (query?.isNotEmpty() == true) {
                 launchIO {
                     recyclerAdapter.submitList(
                         viewModel.getSearchedArticles(query, getCurrentMode())

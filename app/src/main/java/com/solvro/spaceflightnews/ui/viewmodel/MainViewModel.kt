@@ -40,8 +40,6 @@ class MainViewModel(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             fetchArticles()
-            loadUserDataArticles(UserData.favorites, _favoriteArticles)
-            loadUserDataArticles(UserData.history, _historyArticles)
         }
     }
 
@@ -60,6 +58,11 @@ class MainViewModel(
             e.log()
             _articles.postValue(MainViewState.Error(e.message))
         }
+    }
+
+    suspend fun loadBothUserDataArticles(){
+        loadUserDataArticles(UserData.favorites, _favoriteArticles)
+        loadUserDataArticles(UserData.history, _historyArticles)
     }
 
     private suspend fun loadUserDataArticles(
