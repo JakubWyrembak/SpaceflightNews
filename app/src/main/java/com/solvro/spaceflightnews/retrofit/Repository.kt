@@ -1,4 +1,4 @@
-package com.solvro.spaceflightnews.data
+package com.solvro.spaceflightnews.retrofit
 
 class Repository(private val service: ArticlesService) {
 

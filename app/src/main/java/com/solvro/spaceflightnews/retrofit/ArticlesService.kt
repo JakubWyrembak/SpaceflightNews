@@ -1,4 +1,4 @@
-package com.solvro.spaceflightnews.data
+package com.solvro.spaceflightnews.retrofit
 
 import com.solvro.spaceflightnews.model.Article
 import retrofit2.http.GET
