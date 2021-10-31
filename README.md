@@ -37,7 +37,7 @@ Application for Android. Fetching data from [API](https://spaceflightnewsapi.net
   - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
   - [Navigation](https://developer.android.com/guide/navigation)
 
-# How Spaceflight News works?
+# How does Spaceflight News works?
 
 ### Splash screen
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_start.gif)
