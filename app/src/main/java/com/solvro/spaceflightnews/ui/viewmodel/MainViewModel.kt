@@ -11,12 +11,13 @@ import com.solvro.spaceflightnews.states.ArticlesMode
 import com.solvro.spaceflightnews.states.ArticlesMode.*
 import com.solvro.spaceflightnews.states.MainViewState
 import com.solvro.spaceflightnews.utils.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val repository: Repository,
     private val preferences: Preferences,
+    dispatcherIO: CoroutineDispatcher
 ) : ViewModel() {
 
     // Main screen
@@ -37,7 +38,7 @@ class MainViewModel(
     private var timesLoaded = 0
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherIO) {
             fetchArticles()
         }
     }
