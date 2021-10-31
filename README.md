@@ -26,6 +26,7 @@ I used:
 - UI
   - [Glide](https://github.com/bumptech/glide)
   - [Android View Animations](https://github.com/daimajia/AndroidViewAnimations)
+  - [Material Design](https://material.io/develop/android/docs/getting-started)
 - DI
   - [Koin](https://github.com/InsertKoinIO/koin)
 - Network
