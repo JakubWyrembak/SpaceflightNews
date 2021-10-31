@@ -33,4 +33,8 @@ I used:
 # Splash screen
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_app.gif)
 
-# 
+# Detail view
+![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_detail.gif)
+
+# History
+![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/history.gif)
