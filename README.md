@@ -14,7 +14,7 @@ Additional features:
 - [X] Pagination
 - [X] Loading data on splash screen
 - [X] Preferences
-- [ ] Filtering
+- [ ] Sites filter
 - [ ] Settings page
 
 I used:
