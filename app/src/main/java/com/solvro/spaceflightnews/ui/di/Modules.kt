@@ -1,7 +1,7 @@
 package com.solvro.spaceflightnews.ui.di
 
-import com.solvro.spaceflightnews.data.ApiClient
-import com.solvro.spaceflightnews.data.Repository
+import com.solvro.spaceflightnews.retrofit.ApiClient
+import com.solvro.spaceflightnews.retrofit.Repository
 import com.solvro.spaceflightnews.ui.viewmodel.MainViewModel
 import com.solvro.spaceflightnews.utils.Preferences
 import kotlinx.coroutines.Dispatchers

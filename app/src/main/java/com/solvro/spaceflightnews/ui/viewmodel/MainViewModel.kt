@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.solvro.spaceflightnews.data.Repository
+import com.solvro.spaceflightnews.retrofit.Repository
 import com.solvro.spaceflightnews.model.Article
 import com.solvro.spaceflightnews.states.ArticlesMode
 import com.solvro.spaceflightnews.states.ArticlesMode.*
@@ -13,11 +13,12 @@ import com.solvro.spaceflightnews.states.MainViewState
 import com.solvro.spaceflightnews.utils.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val repository: Repository,
     private val preferences: Preferences,
-    dispatcherIO: CoroutineDispatcher
+    private val dispatcherIO: CoroutineDispatcher
 ) : ViewModel() {
 
     // Main screen
@@ -48,10 +49,12 @@ class MainViewModel(
 
         _articles.postValue(MainViewState.Loading)
         try {
-            data += repository.getArticles(
-                getFirstFetchingIndex(),
-                getLastFetchingIndex()
-            )
+            withContext(dispatcherIO){
+                data += repository.getArticles(
+                    getFirstFetchingIndex(),
+                    getLastFetchingIndex()
+                )
+            }
 
             _articles.postValue(MainViewState.Success(data.distinct()))
         } catch (e: Exception) {
@@ -61,8 +64,10 @@ class MainViewModel(
     }
 
     suspend fun loadBothUserDataArticles() {
-        loadUserDataArticles(UserData.favorites, _favoriteArticles)
-        loadUserDataArticles(UserData.history, _historyArticles)
+        withContext(dispatcherIO){
+            loadUserDataArticles(UserData.favorites, _favoriteArticles)
+            loadUserDataArticles(UserData.history, _historyArticles)
+        }
     }
 
     private suspend fun loadUserDataArticles(
@@ -86,7 +91,9 @@ class MainViewModel(
 
     private suspend fun getArticlesByIds(ids: List<String>) =
         try {
-            repository.getArticlesById(ids)
+            withContext(dispatcherIO){
+                repository.getArticlesById(ids)
+            }
         } catch (e: Exception) {
             e.log()
             listOf()
@@ -116,25 +123,29 @@ class MainViewModel(
         }
 
         UserData.history.add(0, id)
-        currData.add(0, getSingleArticle(id))
-        _historyArticles.postValue(MainViewState.Success(currData))
+        withContext(dispatcherIO){
+            currData.add(0, getSingleArticle(id))
+            _historyArticles.postValue(MainViewState.Success(currData))
+        }
     }
 
 
     suspend fun addOrRemoveFavorite(id: Int) {
         val currData = getCurrentData(favoriteArticles)
 
-        if (id in UserData.favorites) {
-            UserData.favorites.remove(id)
-            currData.removeIf {
-                it.id == id
+        withContext(dispatcherIO){
+            if (id in UserData.favorites) {
+                UserData.favorites.remove(id)
+                currData.removeIf {
+                    it.id == id
+                }
+            } else {
+                UserData.favorites.add(0, id)
+                currData.add(0, getSingleArticle(id))
             }
-        } else {
-            UserData.favorites.add(0, id)
-            currData.add(0, getSingleArticle(id))
-        }
 
-        _favoriteArticles.postValue(MainViewState.Success(currData))
+            _favoriteArticles.postValue(MainViewState.Success(currData))
+        }
     }
 
     private fun getCurrentData(articles: LiveData<MainViewState>) =
@@ -145,13 +156,15 @@ class MainViewModel(
         }
 
     suspend fun onRefresh(currentMode: ArticlesMode) {
-        when (currentMode) {
-            MAIN -> {
-                timesLoaded = 0
-                fetchArticles()
+        withContext(dispatcherIO){
+            when (currentMode) {
+                MAIN -> {
+                    timesLoaded = 0
+                    fetchArticles()
+                }
+                HISTORY -> loadUserDataArticles(UserData.history, _historyArticles)
+                FAVORITES -> loadUserDataArticles(UserData.favorites, _favoriteArticles)
             }
-            HISTORY -> loadUserDataArticles(UserData.history, _historyArticles)
-            FAVORITES -> loadUserDataArticles(UserData.favorites, _favoriteArticles)
         }
     }
 
