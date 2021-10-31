@@ -12,6 +12,7 @@ Additional features:
 - [X] Search articles by title
 - [X] History page
 - [X] Pagination
+- [X] Loading data on splash screen
 - [ ] Filtering
 - [ ] Settings page
 
