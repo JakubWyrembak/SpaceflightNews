@@ -31,13 +31,8 @@ fun View.changeFavoriteButtonIcon(article: Article) {
         )!!
 
     when (this) {
-        is AppCompatImageButton -> {
-            setImageDrawable(drawableIcon)
-        }
-
-        is ActionMenuItemView -> {
-            setIcon(drawableIcon)
-        }
+        is AppCompatImageButton -> setImageDrawable(drawableIcon)
+        is ActionMenuItemView -> setIcon(drawableIcon)
     }
 
     this.pulse()
@@ -47,13 +42,6 @@ fun View.pulse() {
     YoYo.with(Techniques.Pulse)
         .playOn(this)
 }
-
-fun String.getArticlesIds(): List<Int> =
-    removeSurrounding("[", "]")
-        .split(", ")
-        .mapNotNull {
-            it.toIntOrNull()
-        }
 
 fun View.makeGone() {
     this.visibility = View.GONE

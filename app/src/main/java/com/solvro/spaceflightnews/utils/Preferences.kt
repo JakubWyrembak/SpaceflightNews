@@ -12,7 +12,9 @@ class Preferences(context: Context) {
         context.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE)
 
     fun getArticles(key: String): List<Int> =
-        preferences.getString(key, "")?.getArticlesIds() ?: run {
+        preferences.getString(key, "")?.let {
+            getArticlesIds(it)
+        } ?: run {
             listOf()
         }
 
@@ -22,6 +24,13 @@ class Preferences(context: Context) {
             apply()
         }
     }
+
+    private fun getArticlesIds(articles: String): List<Int> =
+        articles.removeSurrounding("[", "]")
+            .split(", ")
+            .mapNotNull {
+                it.toIntOrNull()
+            }
 
     companion object {
         private const val TAG = "Preferences"
