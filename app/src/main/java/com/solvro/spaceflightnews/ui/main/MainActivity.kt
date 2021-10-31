@@ -48,10 +48,6 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
-
-        val badge = binding.navView.getOrCreateBadge(0)
-        badge.isVisible = true
-        badge.number = 50
     }
 
     override fun onSupportNavigateUp(): Boolean {
