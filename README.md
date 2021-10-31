@@ -14,7 +14,7 @@ Additional features:
 - [X] Pagination
 - [X] Loading data on splash screen
 - [X] Preferences
-- [ ] Sites filter
+- [ ] Filtering
 - [ ] Settings page
 
 I used:
@@ -30,11 +30,14 @@ I used:
   - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
   - [Navigation](https://developer.android.com/guide/navigation)
 
-# Splash screen
+### Splash screen
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_app.gif)
 
-# Detail view
+### Detail view
 ![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_detail.gif)
 
-# History
-![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/history.gif)
+### History and favorites
+![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_history_fav.gif)
+
+### Searching
+![](https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/gif_search.gif)
