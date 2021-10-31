@@ -32,9 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.loadBothUserDataArticles()
-        }
+        viewModel.loadBothUserDataArticles()
 
         setupNavigation()
     }

@@ -63,8 +63,8 @@ class MainViewModel(
         }
     }
 
-    suspend fun loadBothUserDataArticles() {
-        withContext(dispatcherIO){
+    fun loadBothUserDataArticles() {
+        viewModelScope.launch(dispatcherIO){
             loadUserDataArticles(UserData.favorites, _favoriteArticles)
             loadUserDataArticles(UserData.history, _historyArticles)
         }
@@ -128,7 +128,6 @@ class MainViewModel(
             _historyArticles.postValue(MainViewState.Success(currData))
         }
     }
-
 
     suspend fun addOrRemoveFavorite(id: Int) {
         val currData = getCurrentData(favoriteArticles)

@@ -3,7 +3,6 @@ package com.solvro.spaceflightnews.ui.detail
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -13,7 +12,6 @@ import com.solvro.spaceflightnews.model.Article
 import com.solvro.spaceflightnews.ui.viewmodel.MainViewModel
 import com.solvro.spaceflightnews.utils.changeFavoriteButtonIcon
 import com.solvro.spaceflightnews.utils.launchIO
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArticleDetailFragment : Fragment() {
@@ -65,10 +63,8 @@ class ArticleDetailFragment : Fragment() {
         when (item.itemId) {
             R.id.favorite_button -> {
                 requireActivity().findViewById<View>(item.itemId).changeFavoriteButtonIcon(article)
-                lifecycleScope.launch {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        viewModel.addOrRemoveFavorite(article.id)
-                    }
+                launchIO {
+                    viewModel.addOrRemoveFavorite(article.id)
                 }
                 return true
             }
