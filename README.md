@@ -16,7 +16,7 @@ Additional features:
 - [ ] Filtering
 - [ ] Settings page
 
-Frameworks:
+I used:
 - UI
   - [Glide](https://github.com/bumptech/glide)
   - [Android View Animations](https://github.com/daimajia/AndroidViewAnimations)
@@ -26,6 +26,5 @@ Frameworks:
   - [Retrofit2](https://github.com/square/retrofit)
   - [Moshi](https://github.com/square/moshi)
 - And others
-  - [Coroutines]
-  - [ViewModel]
-  - [Navigation]
+  - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+  - [Navigation](https://developer.android.com/guide/navigation)
