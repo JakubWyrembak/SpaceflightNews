@@ -1,4 +1,4 @@
-package com.solvro.spaceflightnews.states
+package com.solvro.spaceflightnews.utils
 
 object UserData {
     var history = mutableListOf<Int>()
