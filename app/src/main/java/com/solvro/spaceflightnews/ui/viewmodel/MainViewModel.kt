@@ -10,7 +10,6 @@ import com.solvro.spaceflightnews.model.Article
 import com.solvro.spaceflightnews.states.ArticlesMode
 import com.solvro.spaceflightnews.states.ArticlesMode.*
 import com.solvro.spaceflightnews.states.MainViewState
-import com.solvro.spaceflightnews.utils.UserData
 import com.solvro.spaceflightnews.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,7 +59,7 @@ class MainViewModel(
         }
     }
 
-    suspend fun loadBothUserDataArticles(){
+    suspend fun loadBothUserDataArticles() {
         loadUserDataArticles(UserData.favorites, _favoriteArticles)
         loadUserDataArticles(UserData.history, _historyArticles)
     }
