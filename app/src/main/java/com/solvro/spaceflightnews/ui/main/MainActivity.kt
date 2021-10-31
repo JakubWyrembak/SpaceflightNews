@@ -14,9 +14,7 @@ import com.solvro.spaceflightnews.databinding.ActivityMainBinding
 import com.solvro.spaceflightnews.ui.viewmodel.MainViewModel
 import com.solvro.spaceflightnews.utils.makeGone
 import com.solvro.spaceflightnews.utils.makeVisible
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {

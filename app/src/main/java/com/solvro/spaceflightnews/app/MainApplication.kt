@@ -1,4 +1,4 @@
-package com.solvro.spaceflightnews.ui.start
+package com.solvro.spaceflightnews.app
 
 import android.app.Application
 import com.solvro.spaceflightnews.ui.di.MainModule
