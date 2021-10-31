@@ -1,5 +1,7 @@
 # Spaceflight News - Solvro recruitment task
 
+Application for Android. Fetching data from [API](https://spaceflightnewsapi.net/) and then showing the articles about spaceflights.
+
 Features (obligatory):
 - [X] Displaying list of articles
 - [X] Add to favorites
