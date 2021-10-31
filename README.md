@@ -20,8 +20,11 @@ Application for Android. Fetching data from [API](https://spaceflightnewsapi.net
 - [X] Pagination
 - [X] Loading data on splash screen
 - [X] Preferences
+
+## TODO
 - [ ] Filtering
 - [ ] Settings page
+- [ ] Move coroutines out of activity/fragment
 
 ## Frameworks
 - UI
