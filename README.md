@@ -1,7 +1,4 @@
 # Spaceflight News - KN Solvro recruitment task
-<p align="center">
-  <img src="https://github.com/JakubWyrembak/SpaceflightNews/blob/master/readmeImages/app_icon.jpg">
-</p>
 
 Application for Android. Fetching data from [API](https://spaceflightnewsapi.net/) and then showing the articles about spaceflights.
 
